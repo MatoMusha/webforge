@@ -1,0 +1,18 @@
+{
+  "name": "web-designer",
+  "version": "0.1.0",
+  "description": "Agentic website creation plugin for Claude Code — agents that chain, remember, and verify",
+  "author": "Matias Musha",
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "node scripts/build.js"
+  },
+  "keywords": [
+    "claude-code",
+    "plugin",
+    "agents",
+    "web-design",
+    "frontend",
+    "design-system"
+  ]
+}
