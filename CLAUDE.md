@@ -52,6 +52,7 @@ webforge/
 │   ├── claude-code/skills/      #   Claude Code (skill dirs)
 │   ├── cursor/.cursorrules      #   Cursor (single file)
 │   ├── windsurf/.windsurfrules  #   Windsurf (single file)
+│   ├── gemini-cli/GEMINI.md     #   Gemini CLI (single file)
 │   ├── codex/AGENTS.md          #   Codex (single file)
 │   └── generic/webforge-instructions.md
 ├── scripts/
@@ -66,13 +67,14 @@ webforge/
 
 ## Multi-Model Support
 
-The build system outputs to 5 providers from a single source:
+The build system outputs to 6 providers from a single source:
 
 | Provider | Format | Output |
 |----------|--------|--------|
 | Claude Code | Skill directories | `dist/claude-code/skills/` |
 | Cursor | .mdc rule files | `dist/cursor/.cursor/rules/` |
 | Windsurf | Single rules file | `dist/windsurf/.windsurfrules` |
+| Gemini CLI | GEMINI.md | `dist/gemini-cli/GEMINI.md` |
 | Codex | Agent instructions | `dist/codex/AGENTS.md` |
 | Generic | Markdown | `dist/generic/webforge-instructions.md` |
 

@@ -34,6 +34,16 @@ export const providers = {
     keepFrontmatter: false,
   },
 
+  'gemini-cli': {
+    name: 'Gemini CLI',
+    model: 'Gemini',
+    outputDir: 'gemini-cli',
+    // All skills merged into GEMINI.md
+    structure: 'single-file',
+    outputFile: 'GEMINI.md',
+    keepFrontmatter: false,
+  },
+
   codex: {
     name: 'Codex',
     model: 'the AI model',

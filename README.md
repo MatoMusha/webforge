@@ -2,7 +2,7 @@
 
 AI-powered design agents that interview you about look and feel, generate complete design systems, and build production-grade frontend code — from a single prompt.
 
-Works with **Claude Code**, **Cursor**, **Windsurf**, **Codex**, and any AI coding tool.
+Works with **Claude Code**, **Cursor**, **Gemini CLI**, **Windsurf**, **Codex**, and any AI coding tool.
 
 ## What It Does
 
@@ -92,6 +92,16 @@ cd webforge && node scripts/build.js
 
 # Copy the rules file into your project root
 cp dist/windsurf/.windsurfrules /path/to/your-project/.windsurfrules
+```
+
+### Gemini CLI
+
+```bash
+git clone https://github.com/MatoMusha/webforge.git
+cd webforge && node scripts/build.js
+
+# Copy the GEMINI.md file into your project root
+cp dist/gemini-cli/GEMINI.md /path/to/your-project/GEMINI.md
 ```
 
 ### Codex (OpenAI)
@@ -287,6 +297,7 @@ Building providers:
   Claude Code    → dist/claude-code/skills/ (13 files)
   Cursor         → dist/cursor/.cursor/rules/ (5 files)
   Windsurf       → dist/windsurf/.windsurfrules
+  Gemini CLI     → dist/gemini-cli/GEMINI.md
   Codex          → dist/codex/AGENTS.md
   Generic        → dist/generic/webforge-instructions.md
 
