@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>webd-designer — Agentic Website Creation for Claude Code</title>
+  <meta name="description" content="Coordinated AI agents that interview you about design, generate token systems, and build production-grade interfaces. A Claude Code plugin.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <a href="#main" class="skip-link">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo" aria-label="webd-designer home">
+          <span class="logo-mark">wd</span>
+          <span class="logo-text">webd-designer</span>
+        </a>
+        <nav aria-label="Primary">
+          <a href="#how-it-works">How it works</a>
+          <a href="#agents">Agents</a>
+          <a href="#get-started" class="nav-cta">Get started</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- Hero -->
+    <section class="hero" aria-labelledby="hero-heading">
+      <div class="container">
+        <div class="hero-content">
+          <p class="hero-eyebrow">Claude Code Plugin</p>
+          <h1 id="hero-heading">Design systems that<br>build themselves</h1>
+          <p class="hero-body">Just describe what you want. Agents interview you about look and feel, generate a complete token system, then build production-grade code — all from a single prompt.</p>
+          <div class="hero-actions">
+            <a href="#get-started" class="btn btn-primary">Get started</a>
+            <a href="#how-it-works" class="btn btn-ghost">See how it works</a>
+          </div>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="terminal">
+            <div class="terminal-bar">
+              <span class="terminal-dot"></span>
+              <span class="terminal-dot"></span>
+              <span class="terminal-dot"></span>
+            </div>
+            <div class="terminal-body">
+              <p class="terminal-prompt"><span class="t-muted">you</span> build me a landing page for a coffee brand</p>
+              <p class="terminal-response"><span class="t-agent">director</span> Scanning project... no design system found.</p>
+              <p class="terminal-response"><span class="t-agent">strategist</span> What mood are you going for?</p>
+              <p class="terminal-prompt"><span class="t-muted">you</span> warm, organic, earthy</p>
+              <p class="terminal-response"><span class="t-agent">strategist</span> Generated palette: terracotta + warm cream + sage</p>
+              <p class="terminal-response"><span class="t-agent">builder</span> Creating hero, menu section, location card...</p>
+              <p class="terminal-done">Done. 4 files created.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="section" aria-labelledby="how-heading">
+      <div class="container">
+        <h2 id="how-heading">Three agents, one prompt</h2>
+        <p class="section-lead">No slash commands. No configuration. Just say what you want and the agents coordinate automatically.</p>
+
+        <div class="pipeline">
+          <div class="pipeline-step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h3>Director scans your project</h3>
+              <p>Detects your framework, existing tokens, components, and conventions. Figures out if you have a design system or need one.</p>
+            </div>
+          </div>
+
+          <div class="pipeline-connector" aria-hidden="true"></div>
+
+          <div class="pipeline-step step-highlight">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h3>Strategist interviews you</h3>
+              <p>If no design system exists, asks about purpose, audience, mood, color preferences, and typography feel. Generates a complete OKLCH token system.</p>
+            </div>
+          </div>
+
+          <div class="pipeline-connector" aria-hidden="true"></div>
+
+          <div class="pipeline-step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h3>Builder creates production code</h3>
+              <p>Uses your tokens (new or existing) to build components and pages. Adapts to your stack — React, Vue, Svelte, or vanilla HTML.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Agents -->
+    <section id="agents" class="section section-tinted" aria-labelledby="agents-heading">
+      <div class="container">
+        <h2 id="agents-heading">Meet the agents</h2>
+        <p class="section-lead">Each agent has deep domain knowledge and knows when to step in.</p>
+
+        <div class="agent-grid">
+          <article class="agent-card">
+            <div class="agent-icon" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            </div>
+            <h3>Director</h3>
+            <p>Scans your project, detects your stack and design system status, creates a design brief, and routes to the right agents.</p>
+            <span class="agent-trigger">Auto-triggers when you ask to build</span>
+          </article>
+
+          <article class="agent-card">
+            <div class="agent-icon" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+            </div>
+            <h3>Strategist</h3>
+            <p>Interviews you about look and feel — mood, colors, typography. Generates a complete design token system tailored to your vision.</p>
+            <span class="agent-trigger">Activates when no design system exists</span>
+          </article>
+
+          <article class="agent-card">
+            <div class="agent-icon" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            </div>
+            <h3>Builder</h3>
+            <p>Creates production-grade components and pages using your tokens. Semantic HTML, accessible, responsive, and zero AI slop.</p>
+            <span class="agent-trigger">Runs after design decisions are made</span>
+          </article>
+
+          <article class="agent-card">
+            <div class="agent-icon" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            </div>
+            <h3>Design System</h3>
+            <p>Shared knowledge library covering typography, color, spatial design, motion, interaction, responsive, and UX writing.</p>
+            <span class="agent-trigger">Auto-loaded as reference for all agents</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- What You Get -->
+    <section class="section" aria-labelledby="output-heading">
+      <div class="container">
+        <h2 id="output-heading">What it builds for you</h2>
+        <p class="section-lead">From a single prompt to a complete, production-ready foundation.</p>
+
+        <div class="output-grid">
+          <div class="output-item">
+            <h3>OKLCH Color Palette</h3>
+            <p>Perceptually uniform colors with tinted neutrals, semantic tokens, and dark mode support.</p>
+          </div>
+          <div class="output-item">
+            <h3>Typography System</h3>
+            <p>Distinctive fonts, fluid type scale with clamp(), proper line-heights, and font loading strategy.</p>
+          </div>
+          <div class="output-item">
+            <h3>Spacing & Layout</h3>
+            <p>4pt grid, semantic spacing tokens, container queries, and responsive grid patterns.</p>
+          </div>
+          <div class="output-item">
+            <h3>Motion Tokens</h3>
+            <p>Duration tiers, exponential easing curves, and prefers-reduced-motion support baked in.</p>
+          </div>
+          <div class="output-item">
+            <h3>Production Components</h3>
+            <p>Semantic HTML, all 8 interaction states, keyboard navigation, WCAG AA contrast.</p>
+          </div>
+          <div class="output-item">
+            <h3>Stack Adaptation</h3>
+            <p>Outputs Tailwind config, CSS custom properties, or both — matches your existing project.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Get Started -->
+    <section id="get-started" class="section section-cta" aria-labelledby="cta-heading">
+      <div class="container">
+        <h2 id="cta-heading">Start designing</h2>
+        <p class="section-lead">Install the plugin and just ask for what you want.</p>
+
+        <div class="install-block">
+          <div class="install-step">
+            <span class="install-label">Install</span>
+            <code class="install-code">claude plugin add webd-designer</code>
+          </div>
+          <div class="install-step">
+            <span class="install-label">Use</span>
+            <code class="install-code">build me a landing page for a coffee brand</code>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>webd-designer — an open-source Claude Code plugin by <a href="https://matiasmusha.de">Matias Musha</a></p>
+      <p class="footer-license">Apache 2.0 License</p>
+    </div>
+  </footer>
+
+</body>
+</html>

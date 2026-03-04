@@ -1,0 +1,9 @@
+{
+  "slug": "webd-designer",
+  "displayName": "Webd Designer",
+  "tagline": "Agentic website creation with coordinated design + build agents",
+  "category": "design",
+  "tags": ["web-design", "frontend", "agents", "design-system"],
+  "repository": "https://github.com/matiasmusha/webd-designer",
+  "minClaudeCodeVersion": "1.0.0"
+}

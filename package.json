@@ -1,11 +1,14 @@
 {
-  "name": "web-designer",
+  "name": "webd-designer",
   "version": "0.1.0",
-  "description": "Agentic website creation plugin for Claude Code — agents that chain, remember, and verify",
+  "type": "module",
+  "description": "Agentic website creation plugin for Claude Code — coordinated agents that design and build",
   "author": "Matias Musha",
   "license": "Apache-2.0",
   "scripts": {
-    "build": "node scripts/build.js"
+    "build": "node scripts/build.js",
+    "clean": "rm -rf .claude/skills dist/claude-code && mkdir -p .claude/skills dist/claude-code",
+    "rebuild": "npm run clean && npm run build"
   },
   "keywords": [
     "claude-code",
