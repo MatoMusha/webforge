@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 
-import { readFile, mkdir, copyFile, writeFile, rm } from 'node:fs/promises';
+import { readFile, mkdir, writeFile, rm, stat as fsStat } from 'node:fs/promises';
 import { join, dirname, basename } from 'node:path';
-import { readSourceFiles, parseFrontmatter } from './lib/utils.js';
+import { fileURLToPath } from 'node:url';
+import { readSourceFiles, parseFrontmatter, safePath } from './lib/utils.js';
 import { providers } from './providers.js';
 
-const ROOT = new URL('..', import.meta.url).pathname.replace(/\/$/, '');
+const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
 const SOURCE = join(ROOT, 'source');
 const CLAUDE_OUT = join(ROOT, '.claude');
 const DIST_OUT = join(ROOT, 'dist');
@@ -25,6 +26,31 @@ async function clean() {
 }
 
 /**
+ * Validate provider configurations before building.
+ */
+function validateProviders() {
+  for (const [key, p] of Object.entries(providers)) {
+    if (!p.name || !p.outputDir || !p.model || !p.structure) {
+      throw new Error(`Provider "${key}" missing required fields (name, outputDir, model, structure)`);
+    }
+    if (p.structure === 'single-file' && !p.outputFile) {
+      throw new Error(`Provider "${key}" with single-file structure requires outputFile`);
+    }
+  }
+}
+
+/**
+ * Safely read a file with a clear error on failure.
+ */
+async function safeReadFile(filePath) {
+  try {
+    return await readFile(filePath, 'utf-8');
+  } catch (err) {
+    throw new Error(`Failed to read ${filePath}: ${err.message}`);
+  }
+}
+
+/**
  * Replace {{model}} placeholders with provider-specific values.
  */
 function applyPlaceholders(content, provider) {
@@ -40,6 +66,16 @@ function stripFrontmatter(content) {
 }
 
 /**
+ * Strip relative markdown links that point to .md files.
+ * In single-file outputs these are dead links since all content is inlined.
+ */
+function stripDeadLinks(content) {
+  // Replace markdown links like [Typography](../design-system/reference/typography.md)
+  // with just the link text: Typography
+  return content.replace(/\[([^\]]+)\]\([^)]*\.md\)/g, '$1');
+}
+
+/**
  * Build for Claude Code — skills-dir structure.
  * Each skill gets its own directory with SKILL.md + reference files.
  */
@@ -48,16 +84,15 @@ async function buildClaudeCode(files, provider) {
   let count = 0;
 
   for (const file of files) {
-    const content = await readFile(file.path, 'utf-8');
+    const content = await safeReadFile(file.path);
     const transformed = applyPlaceholders(content, provider);
 
-    // Copy to .claude/skills/ (local use)
-    const localDest = join(CLAUDE_OUT, 'skills', file.relativePath);
+    // Validate output paths stay within expected directories
+    const localDest = safePath(join(CLAUDE_OUT, 'skills'), file.relativePath);
     await ensureDir(dirname(localDest));
     await writeFile(localDest, transformed);
 
-    // Copy to dist/claude-code/skills/
-    const distDest = join(providerDir, 'skills', file.relativePath);
+    const distDest = safePath(join(providerDir, 'skills'), file.relativePath);
     await ensureDir(dirname(distDest));
     await writeFile(distDest, transformed);
 
@@ -103,9 +138,10 @@ async function buildSingleFile(files, provider) {
     // SKILL.md first
     const skillMd = skillFiles.find(f => basename(f.path) === 'SKILL.md');
     if (skillMd) {
-      let content = await readFile(skillMd.path, 'utf-8');
+      let content = await safeReadFile(skillMd.path);
       content = stripFrontmatter(content);
       content = applyPlaceholders(content, provider);
+      content = stripDeadLinks(content);
       sections.push(content.trim());
       sections.push('\n---\n');
     }
@@ -113,8 +149,9 @@ async function buildSingleFile(files, provider) {
     // Then reference files
     const refs = skillFiles.filter(f => basename(f.path) !== 'SKILL.md');
     for (const ref of refs) {
-      let content = await readFile(ref.path, 'utf-8');
+      let content = await safeReadFile(ref.path);
       content = applyPlaceholders(content, provider);
+      content = stripDeadLinks(content);
       sections.push(content.trim());
       sections.push('\n---\n');
     }
@@ -124,9 +161,10 @@ async function buildSingleFile(files, provider) {
   for (const [skillName, skillFiles] of Object.entries(grouped)) {
     if (order.includes(skillName)) continue;
     for (const file of skillFiles) {
-      let content = await readFile(file.path, 'utf-8');
+      let content = await safeReadFile(file.path);
       content = basename(file.path) === 'SKILL.md' ? stripFrontmatter(content) : content;
       content = applyPlaceholders(content, provider);
+      content = stripDeadLinks(content);
       sections.push(content.trim());
       sections.push('\n---\n');
     }
@@ -143,11 +181,27 @@ async function build() {
   console.log('webforge build');
   console.log('==============\n');
 
+  // Validate provider configs
+  validateProviders();
+
   await clean();
 
-  // Discover all source files
+  // Verify source directory exists
   const skillsDir = join(SOURCE, 'skills');
+  try {
+    await fsStat(skillsDir);
+  } catch {
+    console.error(`Source directory not found: ${skillsDir}`);
+    process.exit(1);
+  }
+
+  // Discover all source files
   const files = (await readSourceFiles(skillsDir)).filter(f => f.path.endsWith('.md'));
+
+  if (files.length === 0) {
+    console.error('No source files found. Check source/skills/ directory.');
+    process.exit(1);
+  }
 
   const skillCount = files.filter(f => basename(f.path) === 'SKILL.md').length;
   const refCount = files.length - skillCount;

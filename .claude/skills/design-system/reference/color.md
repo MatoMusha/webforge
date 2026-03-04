@@ -12,6 +12,23 @@ OKLCH is perceptually uniform — equal lightness steps look equal (unlike HSL).
 
 **Key**: Reduce chroma as you approach white/black. High chroma at extreme lightness looks garish.
 
+## Fallbacks
+
+Always provide hex/rgb fallbacks before OKLCH values. The browser uses the last value it understands (CSS cascade):
+
+```css
+--color-primary: #4a7cf5;              /* fallback for older browsers */
+--color-primary: oklch(60% 0.15 250);  /* modern browsers */
+```
+
+Alternatively, use `@supports`:
+```css
+:root { --color-primary: #4a7cf5; }
+@supports (color: oklch(0% 0 0)) {
+  :root { --color-primary: oklch(60% 0.15 250); }
+}
+```
+
 ## Tinted Neutrals
 
 Never use pure gray. Add a hint of brand hue (chroma ~0.01):

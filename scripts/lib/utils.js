@@ -1,5 +1,5 @@
-import { readFile, readdir, stat } from 'node:fs/promises';
-import { join, relative } from 'node:path';
+import { readFile, readdir } from 'node:fs/promises';
+import { join, relative, resolve } from 'node:path';
 
 /**
  * Parse YAML-style frontmatter from a markdown file.
@@ -24,28 +24,45 @@ export function parseFrontmatter(source) {
 }
 
 /**
+ * Validate that a resolved path stays within the expected base directory.
+ * Throws on path traversal attempts.
+ */
+export function safePath(base, untrusted) {
+  const resolvedBase = resolve(base);
+  const resolved = resolve(base, untrusted);
+  if (!resolved.startsWith(resolvedBase + '/') && resolved !== resolvedBase) {
+    throw new Error(`Path traversal detected: ${untrusted}`);
+  }
+  return resolved;
+}
+
+/**
  * Recursively discover all files in a directory.
+ * Uses withFileTypes to skip symlinks and avoid extra stat() calls.
  * Returns array of { path, relativePath }
  */
 export async function readSourceFiles(dir, basePath = dir) {
   const files = [];
   let entries;
   try {
-    entries = await readdir(dir);
+    entries = await readdir(dir, { withFileTypes: true });
   } catch {
     return files;
   }
 
   for (const entry of entries) {
-    const fullPath = join(dir, entry);
-    const s = await stat(fullPath);
-    if (s.isDirectory()) {
+    const fullPath = join(dir, entry.name);
+
+    // Skip symlinks to prevent reading outside the source tree
+    if (entry.isSymbolicLink()) continue;
+
+    if (entry.isDirectory()) {
       files.push(...await readSourceFiles(fullPath, basePath));
     } else {
-      files.push({
-        path: fullPath,
-        relativePath: relative(basePath, fullPath),
-      });
+      const rel = relative(basePath, fullPath);
+      // Validate no path traversal
+      safePath(basePath, rel);
+      files.push({ path: fullPath, relativePath: rel });
     }
   }
 

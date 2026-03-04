@@ -95,8 +95,8 @@ Named: 3xs, 2xs, xs, sm, md, lg, xl, 2xl, 3xl
 | medium | 400ms | Accordion, modal |
 | slow | 600ms | Page entrance |
 
-Easing:
-- out: `cubic-bezier(0.25, 1, 0.5, 1)` — entrances
+Easing (see motion reference for full details):
+- out: `cubic-bezier(0.16, 1, 0.3, 1)` — entrances (expo)
 - in: `cubic-bezier(0.7, 0, 0.84, 0)` — exits
 - in-out: `cubic-bezier(0.65, 0, 0.35, 1)` — toggles
 

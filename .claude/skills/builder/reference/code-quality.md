@@ -5,9 +5,14 @@
 ### HTML
 - Use semantic elements (`<header>`, `<nav>`, `<main>`, `<section>`, `<article>`, `<aside>`, `<footer>`)
 - Include `lang` attribute on `<html>`
+- `<meta charset="utf-8">` as first element in `<head>`
+- `<meta name="viewport" content="width=device-width, initial-scale=1">`
+- `<title>` and `<meta name="description">` on every page
 - Proper heading hierarchy (h1 → h2 → h3, no skipping)
 - `alt` on all images (empty `alt=""` for decorative)
 - `<button>` for actions, `<a>` for navigation — never the reverse
+- Include Open Graph tags (`og:title`, `og:description`, `og:image`) for shareable pages
+- Include a `<link rel="icon">` favicon reference
 
 ### CSS
 - Custom properties for all design tokens (colors, spacing, typography)
@@ -35,7 +40,7 @@
 
 ### Rendering
 - Only animate `transform` and `opacity`
-- Use `content-visibility: auto` for long pages
+- Use `content-visibility: auto` for long pages (test that screen readers still access all content)
 - Minimize DOM depth — flat is better than nested
 - Avoid forced synchronous layouts (read then write, not interleaved)
 
@@ -44,6 +49,7 @@
 - Provide responsive `srcset` with width descriptors
 - Set explicit `width` and `height` attributes to prevent CLS
 - SVG for icons and logos (inline for styling, `<img>` for decoration)
+- Inline SVGs: `role="img"` + `aria-label` (or `<title>` element); decorative SVGs: `aria-hidden="true"`
 
 ## Accessibility Checklist
 
@@ -76,3 +82,29 @@
 - Handle network errors gracefully (retry with backoff, offline state)
 - Log errors for debugging, show user-friendly messages
 - Never expose stack traces or internal details to users
+
+## Security
+
+### XSS Prevention
+- Never use `innerHTML` with dynamic content — use `textContent` or DOM methods
+- Escape all user-provided text in HTML output (`&` → `&amp;`, `<` → `&lt;`, `>` → `&gt;`, `"` → `&quot;`)
+- No inline event handlers in generated HTML (`onclick`, `onerror`, `onload`, etc.)
+- No `eval()`, `Function()`, or `setTimeout`/`setInterval` with string arguments
+
+### Content Security Policy
+- Include a CSP meta tag in generated HTML:
+  ```html
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src fonts.gstatic.com; img-src 'self' data:;">
+  ```
+- Adjust the policy for the specific page requirements (e.g., add domains for external images)
+
+### External Resources
+- All external URLs must use HTTPS — never HTTP
+- Use `integrity` attributes (SRI) for CDN-hosted scripts or stylesheets where available
+- Never include tracking scripts, analytics, or third-party JS unless explicitly requested by the user
+- External resources (fonts, CDNs) should use `crossorigin` attribute when applicable
+
+### Forms
+- Default to no `action` attribute (client-side only) unless the user provides a specific endpoint
+- Use `POST` method for forms that submit data
+- Include a note about CSRF protection if the form targets a server

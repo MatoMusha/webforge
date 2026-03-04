@@ -5,9 +5,12 @@
   "description": "Agentic website creation — coordinated agents that design and build. Works with Claude Code, Cursor, Windsurf, Codex, and more.",
   "author": "Matias Musha",
   "license": "Apache-2.0",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "build": "node scripts/build.js",
-    "clean": "rm -rf .claude/skills dist/claude-code && mkdir -p .claude/skills dist/claude-code",
+    "clean": "rm -rf .claude/skills dist && mkdir -p .claude/skills dist",
     "rebuild": "npm run clean && npm run build"
   },
   "keywords": [

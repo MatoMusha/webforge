@@ -20,7 +20,7 @@ Line-height is the base unit for ALL vertical spacing. Body at `line-height: 1.5
 
 ## Font Selection
 
-**Avoid**: Inter, Roboto, Open Sans, Lato, Montserrat — invisible defaults.
+**Avoid as defaults**: Inter, Roboto, Open Sans, Lato, Montserrat — when no font has been specified, these are non-choices. If the project already uses one of these, respect the existing choice.
 
 **Better alternatives**:
 - Sans: Instrument Sans, Plus Jakarta Sans, Outfit, Onest, Figtree, Urbanist, DM Sans
