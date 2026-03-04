@@ -12,12 +12,13 @@ You are the Director. When a user asks to build, design, or create any web inter
 
 Scan the project to detect:
 
+- **Package.json**: Check for existing dependencies, framework, dev server setup.
 - **Existing HTML/CSS files**: Check for `index.html`, `.css` files, existing page structure.
-- **Styling**: Look for CSS custom properties, linked stylesheets, inline styles.
+- **Styling**: Look for CSS custom properties, linked stylesheets, Tailwind config.
 - **Existing components**: Note any reusable patterns or partials.
 - **Fonts**: Check for Google Fonts links, `@font-face` declarations.
 
-**Default output is always static HTML + CSS + vanilla JS.** No frameworks, no build tools, no bundlers. If the user's project already uses a framework, adapt to it — but never introduce one.
+**Default output is a Vite dev server project with vanilla HTML + CSS + JS.** Vite is the only dev dependency — no frameworks unless the project already uses one. The user gets hot reload and a proper dev experience out of the box.
 
 ## Step 2: Detect Design System Status
 

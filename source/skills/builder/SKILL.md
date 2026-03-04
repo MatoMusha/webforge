@@ -20,16 +20,58 @@ Consult these references for implementation decisions:
 - [Component Patterns](reference/component-patterns.md) — composition, structure
 - [Code Quality](reference/code-quality.md) — production standards, accessibility
 
+## Project Scaffold
+
+**The deliverable is a Vite dev server project, not bare HTML files.**
+
+### If the project already has a `package.json`:
+- Adapt to the existing stack (React, Vue, etc.)
+- Add Vite as a dev dependency if not already present
+- Create pages/components within the existing structure
+
+### If starting fresh (no `package.json`):
+Create a Vite vanilla project with this structure:
+
+```
+project/
+├── index.html              # Entry point
+├── styles/
+│   ├── tokens.css          # Design tokens (from Strategist)
+│   └── main.css            # Page styles
+├── scripts/
+│   └── main.js             # Vanilla JS (if needed)
+├── public/
+│   └── (static assets)
+├── package.json            # Vite dev server
+└── vite.config.js          # Minimal Vite config (if needed)
+```
+
+**`package.json`** — minimal, just Vite:
+```json
+{
+  "name": "project-name",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^6"
+  }
+}
+```
+
+**No other dependencies.** The code itself is still vanilla HTML + CSS + JS. Vite just provides the dev server with hot reload.
+
 ## Stack Adaptation
 
-**⛔ IMPORTANT: All output MUST be static — HTML, CSS, and vanilla JavaScript only. No build steps, no frameworks, no bundlers, no server-side rendering. Every page must work by opening the HTML file directly in a browser.**
-
 - Use semantic HTML, CSS custom properties, and vanilla JS
-- If the project already uses a framework (React, Vue, etc.), adapt to it — but default output is always static
-- CSS via `<style>` blocks or linked `.css` files
-- JS via `<script>` tags (no imports, no modules unless the project already uses them)
+- If the project already uses a framework (React, Vue, etc.), adapt to it — but never introduce a framework that isn't already present
+- CSS via linked `.css` files (not `<style>` blocks — Vite handles imports)
+- JS via linked `.js` files (Vite handles module loading)
 - Fonts via `<link>` to Google Fonts or self-hosted files
-- No npm, no node_modules, no package.json dependencies for the output
+- The only dev dependency is Vite — no runtime dependencies
 
 ## Code Standards
 
@@ -72,26 +114,23 @@ Consult these references for implementation decisions:
 ## Output
 
 For each deliverable:
-1. Create the file with complete, immediately runnable code
+1. Create the files with complete, production-ready code
 2. Use the project's design tokens throughout (never hardcode colors/spacing)
-3. Note dependencies needed (font links, package installs)
-4. Flag any deviations from the brief with reasoning
+3. Flag any deviations from the brief with reasoning
 
 ## Post-Build: Launch Dev Server
 
-After creating all files, **immediately start a local dev server** so the user can preview the site:
+After creating all files:
 
-1. Detect the best available server tool and run it in the project directory:
-   - **Preferred**: `npx serve .` (zero-config static server, works everywhere with Node.js)
-   - **Alternative**: `python3 -m http.server 3000` (if Python is available)
-   - **Alternative**: `php -S localhost:3000` (if PHP is available)
-2. Tell the user the URL (e.g., `http://localhost:3000`) and that the server is running
-3. Present a summary:
+1. Run `npm install` to install Vite
+2. Run `npm run dev` to start the dev server
+3. Tell the user the local URL (typically `http://localhost:5173`)
+4. Present a summary:
    - List all files created or modified with a one-line description
    - Highlight any deviations from the design brief
    - Note accessibility features included
 
-**⛔ STOP: Ask the user: "The site is running at http://localhost:3000. Take a look and let me know if you want any changes." Wait for their response before considering the task complete.**
+**⛔ STOP: Ask the user: "The dev server is running at http://localhost:5173. Take a look and let me know if you want any changes." Wait for their response before considering the task complete.**
 
 ## Safety
 
