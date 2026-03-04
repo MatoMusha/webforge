@@ -9,6 +9,7 @@ import { providers } from './providers.js';
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
 const SOURCE = join(ROOT, 'source');
 const CLAUDE_OUT = join(ROOT, '.claude');
+const PLUGIN_OUT = join(ROOT, 'skills');
 const DIST_OUT = join(ROOT, 'dist');
 
 async function ensureDir(dir) {
@@ -19,6 +20,10 @@ async function clean() {
   // Clean Claude Code local output
   await rm(join(CLAUDE_OUT, 'skills'), { recursive: true, force: true });
   await ensureDir(join(CLAUDE_OUT, 'skills'));
+
+  // Clean plugin output (root-level skills/)
+  await rm(PLUGIN_OUT, { recursive: true, force: true });
+  await ensureDir(PLUGIN_OUT);
 
   // Clean all dist outputs
   await rm(DIST_OUT, { recursive: true, force: true });
@@ -91,6 +96,11 @@ async function buildClaudeCode(files, provider) {
     const localDest = safePath(join(CLAUDE_OUT, 'skills'), file.relativePath);
     await ensureDir(dirname(localDest));
     await writeFile(localDest, transformed);
+
+    // Plugin output (root-level skills/)
+    const pluginDest = safePath(PLUGIN_OUT, file.relativePath);
+    await ensureDir(dirname(pluginDest));
+    await writeFile(pluginDest, transformed);
 
     const distDest = safePath(join(providerDir, 'skills'), file.relativePath);
     await ensureDir(dirname(distDest));
@@ -370,6 +380,7 @@ async function build() {
   }
 
   console.log(`\n  + .claude/skills/ (local Claude Code use)`);
+  console.log(`  + skills/ (plugin distribution)`);
   console.log('\nDone.');
 }
 

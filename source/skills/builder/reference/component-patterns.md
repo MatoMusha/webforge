@@ -59,11 +59,44 @@ Prefer composable components with children/slots over prop-heavy monoliths:
 - **Comparison**: side-by-side columns or table
 - **Gallery**: masonry, grid, or lightbox
 
+### Experimental Section Techniques (bold layout only)
+
+Use these when `--layout-style: bold`. Each should simplify or degrade gracefully on mobile and with `prefers-reduced-motion`.
+
+- **Broken grid**: Elements deliberately crossing grid column/row boundaries via `grid-column: span 2` + negative margins. Creates visual tension.
+- **Giant typography as texture**: Oversized text (20vw+) as background/decorative element using low opacity or `mix-blend-mode`. Not for reading — purely visual.
+- **Sticky reveal**: Section content that "peels" or reveals during scroll using `position: sticky` + `overflow: hidden` on the container.
+- **Mixed-width sections**: Alternating between narrow text containers (`max-width: 65ch`) → full-bleed media → wide grid layouts. Breaks the monotony of uniform width.
+- **Parallax layers**: CSS-only depth via `perspective` on parent + `translateZ` on children. No JS parallax libraries.
+- **Clip-path transitions**: Angled (`polygon`) or curved (`ellipse`) section edges instead of straight horizontal dividers. Use `clip-path` on sections.
+
 **Never use the same layout twice across different projects. Combine and remix these patterns to create something unique each time.**
 
 ### Navigation
+
+**Single-page:**
 - Mobile: hamburger → slide drawer or full-screen overlay
 - Desktop: horizontal with clear active states
+
+**Multi-page:**
+- Shared nav injected via JS module (`scripts/shared.js`) on every page
+- Active page marked with `aria-current="page"` — style distinctly (underline, bold, color)
+- Logo always links to `/` (root/home page)
+- Consistent footer with secondary page links and site info
+- Optional: View Transitions API for smooth page-to-page navigation:
+  ```js
+  // In nav link click handler
+  if (document.startViewTransition) {
+    document.startViewTransition(() => {
+      window.location.href = targetUrl;
+    });
+  } else {
+    window.location.href = targetUrl;
+  }
+  ```
+  Always provide `prefers-reduced-motion` fallback (instant navigation, no transition)
+
+**Both:**
 - Use `<nav>` with `aria-label` for multiple nav regions
 - Skip link as first focusable element
 

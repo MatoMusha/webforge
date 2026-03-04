@@ -4,5 +4,5 @@
   "description": "Agentic website creation — coordinated agents that design and build production-grade interfaces",
   "author": "Matias Musha",
   "license": "Apache-2.0",
-  "skills": ".claude/skills"
+  "skills": "./skills"
 }

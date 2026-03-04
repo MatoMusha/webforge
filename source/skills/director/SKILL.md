@@ -43,6 +43,22 @@ Determine:
 - **Type**: Landing page, component, page, feature, full site
 - **Scope**: Full page, section, single component
 - **Complexity**: Simple, moderate, complex
+- **Structure**: Single-page or multi-page
+
+### Detecting Multi-Page Sites
+
+A request implies multi-page when:
+- User says "site" or "website" with distinct sections that deserve their own pages (e.g., "portfolio site with about, work, and contact pages")
+- User implies navigation between separate views ("homepage and a blog page")
+- Content is too diverse to live on a single page (e.g., a restaurant with menus, reservations, events)
+
+If ambiguous, ask: "Should this be a single scrolling page, or separate pages with navigation between them?"
+
+For multi-page sites, identify:
+- **Pages list**: Each page with its purpose (e.g., Home, About, Work, Contact)
+- **Shared elements**: Navigation, header, footer — consistent across all pages
+- **Page hierarchy**: Which is the primary/landing page, which are secondary
+- **Cross-page relationships**: How pages link to each other, any shared content
 
 ## Step 4: Route
 
@@ -72,10 +88,17 @@ Before ANY code is written, create and present this brief to the user:
 - Building: [what]
 - Scope: [full page / section / component]
 
+### Site Structure
+- Type: [single-page / multi-page]
+- Pages: [list each page and its purpose — omit for single-page]
+- Shared elements: [nav, header, footer — omit for single-page]
+- Primary page: [which page is the landing page — omit for single-page]
+
 ### Design Direction
 - Tone: [specific aesthetic]
 - Typography: [fonts, scale]
 - Color: [palette summary]
+- Layout style: [clean/bold] — [brief approach summary, e.g., "symmetric grids, consistent spacing, subtle transitions" or "asymmetric layouts, oversized type, scroll-driven reveals"]
 - Layout: [approach]
 
 ### Deliverables

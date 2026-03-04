@@ -33,7 +33,15 @@ Ask in small groups (2–3 questions at a time), not a wall of text.
 
 **⛔ STOP: Wait for the user's answer before continuing.**
 
-### Group 4 — Constraints (only if relevant)
+### Group 4 — Layout Style
+- Do you want a **clean, balanced layout** — or something more **bold and experimental**?
+  - _Clean/safe_: symmetric grids, consistent spacing, classic typography hierarchy, subtle animations
+  - _Bold/experimental_: asymmetric layouts, dramatic typography contrast, overlapping elements, scroll-driven effects
+  - Or describe something in between
+
+**⛔ STOP: Wait for the user's answer before continuing.**
+
+### Group 5 — Constraints (only if relevant)
 - Existing brand assets? (Logo, specific colors or fonts that must be used)
 - Specific accessibility requirements beyond WCAG AA?
 
@@ -113,6 +121,24 @@ Easing (see motion reference for full details):
 - Soft/friendly → 12–16px
 - Playful → 9999px (pill)
 
+### Layout Personality
+
+Based on the user's layout style choice, generate a `--layout-style` token and apply these parameters:
+
+| Parameter | Clean/Safe | Bold/Experimental |
+|-----------|-----------|-------------------|
+| Grid approach | Symmetric (`1fr 1fr`, `repeat(3, 1fr)`) | Asymmetric (`2fr 1fr`, `1fr 2fr 1fr`) |
+| Spacing variation | Consistent (same gap throughout) | Dramatic (tight within groups, large between sections) |
+| Typography contrast | Standard scale (1.2–1.25 ratio) | High contrast (small body, oversized display headings) |
+| Element overlap | None | Negative margins, `z-index` layering |
+| Scroll effects | None or subtle fade-in | Scroll-driven animations (`animation-timeline: scroll()`) |
+| Content width | Consistent max-width | Mixed full-bleed + narrow sections |
+| Decorative elements | Minimal | `clip-path`, `mix-blend-mode`, rotated elements |
+
+Generate token: `--layout-style: clean` or `--layout-style: bold`
+
+If the user described something in between, lean toward one end and note the specific adjustments.
+
 ## Step 3: Generate Token Files
 
 Adapt output to the detected stack:
@@ -126,7 +152,8 @@ Adapt output to the detected stack:
 Show the user:
 1. Font choices with reasoning
 2. Key palette colors (primary, neutral ends, accent) — show actual color swatches or hex values
-3. Mood recap (their words reflected back)
-4. Files to be created
+3. Layout style choice with approach summary (e.g., "Bold: asymmetric grids, oversized display type, scroll-driven reveals")
+4. Mood recap (their words reflected back)
+5. Files to be created
 
 **⛔ MANDATORY STOP: Ask the user: "Here's the design system I'd create. Does this look right? Any changes?" You MUST wait for the user to explicitly approve before generating any token files. If the user requests changes, update the design and present it again. DO NOT proceed until you receive clear approval (e.g., "yes", "looks good", "approved", "go ahead"). This is non-negotiable.**

@@ -64,6 +64,85 @@ project/
 
 **No other dependencies.** The code itself is still vanilla HTML + CSS + JS. Vite just provides the dev server with hot reload.
 
+### Multi-Page Sites
+
+When the design brief specifies multiple pages, extend the scaffold:
+
+```
+project/
+├── index.html              # Primary/landing page
+├── about/
+│   └── index.html          # About page
+├── work/
+│   └── index.html          # Work/portfolio page
+├── contact/
+│   └── index.html          # Contact page
+├── styles/
+│   ├── tokens.css          # Design tokens (shared)
+│   └── main.css            # Shared styles (layout, nav, footer)
+├── scripts/
+│   ├── shared.js           # Shared layout module (nav, header, footer)
+│   └── main.js             # Page-specific JS (if needed)
+├── public/
+│   └── (static assets)
+├── package.json
+└── vite.config.js          # Multi-page input config
+```
+
+**Shared layout via JS module** — `scripts/shared.js` exports functions for consistent elements:
+
+```js
+export function createNav(currentPage) {
+  const nav = document.createElement('nav');
+  nav.setAttribute('aria-label', 'Main');
+  const pages = [
+    { href: '/', label: 'Home', id: 'home' },
+    { href: '/about/', label: 'About', id: 'about' },
+    // ... from design brief
+  ];
+  // Build nav with aria-current="page" on currentPage
+  return nav;
+}
+
+export function createFooter() { /* ... */ }
+```
+
+Each page imports the shared module:
+```html
+<script type="module">
+  import { createNav, createFooter } from '/scripts/shared.js';
+  document.body.prepend(createNav('home'));
+  document.body.append(createFooter());
+</script>
+```
+
+**Vite config for multi-page** — `vite.config.js`:
+```js
+import { resolve } from 'path';
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html'),
+        about: resolve(__dirname, 'about/index.html'),
+        work: resolve(__dirname, 'work/index.html'),
+        contact: resolve(__dirname, 'contact/index.html'),
+      },
+    },
+  },
+});
+```
+
+**Multi-page rules:**
+- Each page gets a unique `<title>` and `<meta name="description">`
+- Active nav item uses `aria-current="page"`
+- Shared CSS (`tokens.css`, `main.css`) linked on all pages
+- Page-specific CSS only where genuinely needed (avoid duplication)
+- Logo always links to `/`
+- Skip link as first focusable element on every page
+
 ## Stack Adaptation
 
 - Use semantic HTML, CSS custom properties, and vanilla JS
@@ -87,6 +166,32 @@ project/
 - `gap` for spacing (not margins)
 - Only animate `transform` and `opacity`
 - `grid-template-rows: 0fr → 1fr` for height animations
+
+## Layout Style Implementation
+
+Apply the `--layout-style` token from the Strategist to shape the entire build.
+
+### `--layout-style: clean`
+- **Grids**: Symmetric columns (`1fr 1fr`, `repeat(3, 1fr)`), consistent gaps
+- **Spacing**: Uniform spacing scale, same section padding throughout
+- **Typography**: Standard type scale (1.2–1.25 ratio), clear hierarchy without extreme contrast
+- **Overlap**: None — clean separation between all elements
+- **Animation**: Subtle transitions (fade, slight translate), no scroll-driven effects
+- **Sections**: Consistent max-width container, uniform section structure
+
+### `--layout-style: bold`
+- **Grids**: Asymmetric columns (`2fr 1fr`, `1fr 2fr 1fr`), varied gaps
+- **Spacing**: Dramatic variation — tight within groups, large breathing room between sections
+- **Typography**: Oversized display headings (3×–5× body size), high contrast between hierarchy levels
+- **Overlap**: Elements crossing boundaries via negative margins, `z-index` layering
+- **Animation**: Scroll-driven animations using `@supports (animation-timeline: scroll())` with `prefers-reduced-motion` fallback
+- **Sections**: Mixed full-bleed + narrow content widths, `clip-path` for angled/curved section edges, `mix-blend-mode` for visual texture
+
+### Both styles must:
+- Maintain WCAG AA accessibility (contrast, focus, screen readers)
+- Work on mobile — bold simplifies to single-column on small screens, overlap reduces/removes
+- Use design tokens throughout (never hardcode values)
+- Respect `prefers-reduced-motion` (bold falls back to clean transitions)
 
 ## Anti-Patterns — Never Produce
 
@@ -124,7 +229,7 @@ After creating all files:
 
 1. Run `npm install` to install Vite
 2. Run `npm run dev` to start the dev server
-3. Tell the user the local URL from the dev server output
+3. Read the actual URL from the dev server output and tell the user — do NOT assume `localhost:5173`. Vite auto-increments the port if it's already in use.
 4. Present a summary:
    - List all files created or modified with a one-line description
    - Highlight any deviations from the design brief
