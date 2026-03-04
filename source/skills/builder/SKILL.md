@@ -124,13 +124,13 @@ After creating all files:
 
 1. Run `npm install` to install Vite
 2. Run `npm run dev` to start the dev server
-3. Tell the user the local URL (typically `http://localhost:5173`)
+3. Tell the user the local URL from the dev server output
 4. Present a summary:
    - List all files created or modified with a one-line description
    - Highlight any deviations from the design brief
    - Note accessibility features included
 
-**⛔ STOP: Ask the user: "The dev server is running at http://localhost:5173. Take a look and let me know if you want any changes." Wait for their response before considering the task complete.**
+**⛔ STOP: Ask the user: "The dev server is running. Take a look and let me know if you want any changes." Wait for their response before considering the task complete.**
 
 ## Safety
 
