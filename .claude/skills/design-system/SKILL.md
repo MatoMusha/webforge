@@ -1,12 +1,12 @@
 ---
 name: design-system
-description: Shared design knowledge library for web-designer agents. Not user-invocable — referenced by director, builder, and future agents for typography, color, spatial, motion, interaction, responsive, and writing decisions.
+description: Shared design knowledge library for webforge agents. Not user-invocable — referenced by director, builder, and future agents for typography, color, spatial, motion, interaction, responsive, and writing decisions.
 user_invocable: false
 ---
 
 # Design System Knowledge
 
-This skill contains the design knowledge that web-designer agents reference when making aesthetic and implementation decisions. It distills production-grade frontend design principles into actionable guidance.
+This skill contains the design knowledge that webforge agents reference when making aesthetic and implementation decisions. It distills production-grade frontend design principles into actionable guidance.
 
 ## Core Principles
 

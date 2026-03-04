@@ -1,70 +1,171 @@
 #!/usr/bin/env node
 
-import { mkdir, copyFile, rm } from 'node:fs/promises';
+import { readFile, mkdir, copyFile, writeFile, rm } from 'node:fs/promises';
 import { join, dirname, basename } from 'node:path';
-import { readSourceFiles } from './lib/utils.js';
+import { readSourceFiles, parseFrontmatter } from './lib/utils.js';
+import { providers } from './providers.js';
 
 const ROOT = new URL('..', import.meta.url).pathname.replace(/\/$/, '');
 const SOURCE = join(ROOT, 'source');
 const CLAUDE_OUT = join(ROOT, '.claude');
-const DIST_OUT = join(ROOT, 'dist', 'claude-code');
+const DIST_OUT = join(ROOT, 'dist');
 
 async function ensureDir(dir) {
   await mkdir(dir, { recursive: true });
 }
 
 async function clean() {
-  for (const dir of [join(CLAUDE_OUT, 'skills'), DIST_OUT]) {
-    await rm(dir, { recursive: true, force: true });
-    await ensureDir(dir);
-  }
-  // Clean legacy commands dir if it exists
-  await rm(join(CLAUDE_OUT, 'commands'), { recursive: true, force: true });
+  // Clean Claude Code local output
+  await rm(join(CLAUDE_OUT, 'skills'), { recursive: true, force: true });
+  await ensureDir(join(CLAUDE_OUT, 'skills'));
+
+  // Clean all dist outputs
+  await rm(DIST_OUT, { recursive: true, force: true });
+  await ensureDir(DIST_OUT);
 }
 
-async function buildSkills() {
-  const skillsDir = join(SOURCE, 'skills');
-  const files = await readSourceFiles(skillsDir);
-  let skillCount = 0;
-  let refCount = 0;
+/**
+ * Replace {{model}} placeholders with provider-specific values.
+ */
+function applyPlaceholders(content, provider) {
+  return content.replace(/\{\{model\}\}/g, provider.model);
+}
+
+/**
+ * Strip YAML frontmatter from content.
+ */
+function stripFrontmatter(content) {
+  const { content: body } = parseFrontmatter(content);
+  return body;
+}
+
+/**
+ * Build for Claude Code — skills-dir structure.
+ * Each skill gets its own directory with SKILL.md + reference files.
+ */
+async function buildClaudeCode(files, provider) {
+  const providerDir = join(DIST_OUT, provider.outputDir);
+  let count = 0;
 
   for (const file of files) {
-    if (!file.path.endsWith('.md')) continue;
+    const content = await readFile(file.path, 'utf-8');
+    const transformed = applyPlaceholders(content, provider);
 
-    // Copy to .claude/skills/
-    const dest = join(CLAUDE_OUT, 'skills', file.relativePath);
-    await ensureDir(dirname(dest));
-    await copyFile(file.path, dest);
+    // Copy to .claude/skills/ (local use)
+    const localDest = join(CLAUDE_OUT, 'skills', file.relativePath);
+    await ensureDir(dirname(localDest));
+    await writeFile(localDest, transformed);
 
     // Copy to dist/claude-code/skills/
-    const distDest = join(DIST_OUT, 'skills', file.relativePath);
+    const distDest = join(providerDir, 'skills', file.relativePath);
     await ensureDir(dirname(distDest));
-    await copyFile(file.path, distDest);
+    await writeFile(distDest, transformed);
 
-    if (basename(file.path) === 'SKILL.md') {
-      skillCount++;
-    } else {
-      refCount++;
+    count++;
+  }
+
+  return count;
+}
+
+/**
+ * Build for single-file providers (Cursor, Windsurf, Codex, Generic).
+ * Merges all skills + references into one file.
+ */
+async function buildSingleFile(files, provider) {
+  const providerDir = join(DIST_OUT, provider.outputDir);
+  await ensureDir(providerDir);
+
+  // Determine merge order: design-system first, then director, strategist, builder
+  const order = ['design-system', 'director', 'strategist', 'builder'];
+
+  // Group files by skill name
+  const grouped = {};
+  for (const file of files) {
+    const skillName = file.relativePath.split('/')[0];
+    if (!grouped[skillName]) grouped[skillName] = [];
+    grouped[skillName].push(file);
+  }
+
+  const sections = [];
+
+  // Header
+  sections.push(`# Webforge — AI Design Agents\n`);
+  sections.push(`You have access to webforge's coordinated design agents. When the user asks to build, design, or create web interfaces, follow the agent pipeline below.\n`);
+  sections.push(`---\n`);
+
+  // Process skills in order
+  for (const skillName of order) {
+    const skillFiles = grouped[skillName];
+    if (!skillFiles) continue;
+
+    // SKILL.md first
+    const skillMd = skillFiles.find(f => basename(f.path) === 'SKILL.md');
+    if (skillMd) {
+      let content = await readFile(skillMd.path, 'utf-8');
+      content = stripFrontmatter(content);
+      content = applyPlaceholders(content, provider);
+      sections.push(content.trim());
+      sections.push('\n---\n');
+    }
+
+    // Then reference files
+    const refs = skillFiles.filter(f => basename(f.path) !== 'SKILL.md');
+    for (const ref of refs) {
+      let content = await readFile(ref.path, 'utf-8');
+      content = applyPlaceholders(content, provider);
+      sections.push(content.trim());
+      sections.push('\n---\n');
     }
   }
 
-  return { skillCount, refCount };
+  // Add any skills not in the explicit order
+  for (const [skillName, skillFiles] of Object.entries(grouped)) {
+    if (order.includes(skillName)) continue;
+    for (const file of skillFiles) {
+      let content = await readFile(file.path, 'utf-8');
+      content = basename(file.path) === 'SKILL.md' ? stripFrontmatter(content) : content;
+      content = applyPlaceholders(content, provider);
+      sections.push(content.trim());
+      sections.push('\n---\n');
+    }
+  }
+
+  const merged = sections.join('\n').replace(/\n{3,}/g, '\n\n').trim() + '\n';
+  const outPath = join(providerDir, provider.outputFile);
+  await writeFile(outPath, merged);
+
+  return 1;
 }
 
 async function build() {
-  console.log('webd-designer build');
-  console.log('===================\n');
+  console.log('webforge build');
+  console.log('==============\n');
 
   await clean();
 
-  const { skillCount, refCount } = await buildSkills();
+  // Discover all source files
+  const skillsDir = join(SOURCE, 'skills');
+  const files = (await readSourceFiles(skillsDir)).filter(f => f.path.endsWith('.md'));
 
-  console.log(`Skills:    ${skillCount}`);
-  console.log(`Reference: ${refCount}`);
-  console.log(`\nOutput:`);
-  console.log(`  .claude/skills/    (local use)`);
-  console.log(`  dist/claude-code/  (distribution)\n`);
-  console.log('Done.');
+  const skillCount = files.filter(f => basename(f.path) === 'SKILL.md').length;
+  const refCount = files.length - skillCount;
+
+  console.log(`Source: ${skillCount} skills, ${refCount} reference files\n`);
+  console.log('Building providers:');
+
+  // Build each provider
+  for (const [key, provider] of Object.entries(providers)) {
+    if (provider.structure === 'skills-dir') {
+      const count = await buildClaudeCode(files, provider);
+      console.log(`  ${provider.name.padEnd(14)} → dist/${provider.outputDir}/skills/ (${count} files)`);
+    } else {
+      await buildSingleFile(files, provider);
+      console.log(`  ${provider.name.padEnd(14)} → dist/${provider.outputDir}/${provider.outputFile}`);
+    }
+  }
+
+  console.log(`\n  + .claude/skills/ (local Claude Code use)`);
+  console.log('\nDone.');
 }
 
 build().catch((err) => {

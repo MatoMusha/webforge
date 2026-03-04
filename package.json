@@ -1,8 +1,8 @@
 {
-  "name": "webd-designer",
+  "name": "webforge",
   "version": "0.1.0",
   "type": "module",
-  "description": "Agentic website creation plugin for Claude Code — coordinated agents that design and build",
+  "description": "Agentic website creation — coordinated agents that design and build. Works with Claude Code, Cursor, Windsurf, Codex, and more.",
   "author": "Matias Musha",
   "license": "Apache-2.0",
   "scripts": {

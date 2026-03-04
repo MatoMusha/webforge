@@ -1,7 +1,7 @@
 {
-  "name": "webd-designer",
+  "name": "webforge",
   "version": "0.1.0",
-  "description": "Agentic website creation plugin — coordinated agents that design and build production-grade interfaces",
+  "description": "Agentic website creation — coordinated agents that design and build production-grade interfaces",
   "author": "Matias Musha",
   "license": "Apache-2.0",
   "skills": ".claude/skills"
