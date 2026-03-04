@@ -77,14 +77,21 @@ For each deliverable:
 3. Note dependencies needed (font links, package installs)
 4. Flag any deviations from the brief with reasoning
 
-## Post-Build Review
+## Post-Build: Launch Dev Server
 
-After creating all files, present a summary to the user:
-1. List all files created or modified with a one-line description
-2. Highlight any deviations from the design brief
-3. Note accessibility features included
+After creating all files, **immediately start a local dev server** so the user can preview the site:
 
-**⛔ STOP: Ask the user: "Here's what I built. Want me to adjust anything?" Wait for their response before considering the task complete.**
+1. Detect the best available server tool and run it in the project directory:
+   - **Preferred**: `npx serve .` (zero-config static server, works everywhere with Node.js)
+   - **Alternative**: `python3 -m http.server 3000` (if Python is available)
+   - **Alternative**: `php -S localhost:3000` (if PHP is available)
+2. Tell the user the URL (e.g., `http://localhost:3000`) and that the server is running
+3. Present a summary:
+   - List all files created or modified with a one-line description
+   - Highlight any deviations from the design brief
+   - Note accessibility features included
+
+**⛔ STOP: Ask the user: "The site is running at http://localhost:3000. Take a look and let me know if you want any changes." Wait for their response before considering the task complete.**
 
 ## Safety
 

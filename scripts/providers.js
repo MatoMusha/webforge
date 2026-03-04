@@ -19,9 +19,8 @@ export const providers = {
     name: 'Cursor',
     model: 'the AI model',
     outputDir: 'cursor',
-    // All skills merged into a single .cursorrules file
-    structure: 'single-file',
-    outputFile: '.cursorrules',
+    // Split into .cursor/rules/*.mdc files for better attention
+    structure: 'mdc-rules',
     keepFrontmatter: false,
   },
 

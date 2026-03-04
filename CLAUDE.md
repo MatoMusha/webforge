@@ -71,7 +71,7 @@ The build system outputs to 5 providers from a single source:
 | Provider | Format | Output |
 |----------|--------|--------|
 | Claude Code | Skill directories | `dist/claude-code/skills/` |
-| Cursor | Single rules file | `dist/cursor/.cursorrules` |
+| Cursor | .mdc rule files | `dist/cursor/.cursor/rules/` |
 | Windsurf | Single rules file | `dist/windsurf/.windsurfrules` |
 | Codex | Agent instructions | `dist/codex/AGENTS.md` |
 | Generic | Markdown | `dist/generic/webforge-instructions.md` |

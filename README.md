@@ -84,11 +84,11 @@ cp -r dist/claude-code/skills/ /path/to/your-project/.claude/skills/
 git clone https://github.com/MatoMusha/webforge.git
 cd webforge && node scripts/build.js
 
-# Copy the rules file into your project root
-cp dist/cursor/.cursorrules /path/to/your-project/.cursorrules
+# Copy the rules into your project
+cp -r dist/cursor/.cursor/ /path/to/your-project/.cursor/
 ```
 
-The `.cursorrules` file contains all webforge agent instructions merged into a single file. Cursor will automatically load it as project context.
+Webforge outputs individual `.mdc` rule files to `.cursor/rules/`. Cursor auto-loads the pipeline rules (which enforce the approval gates) and pulls in agent-specific rules as needed. This split format ensures the model gives proper attention to each instruction.
 
 ### Windsurf
 
@@ -278,7 +278,7 @@ Source: 4 skills, 9 reference files
 
 Building providers:
   Claude Code    → dist/claude-code/skills/ (13 files)
-  Cursor         → dist/cursor/.cursorrules
+  Cursor         → dist/cursor/.cursor/rules/ (5 files)
   Windsurf       → dist/windsurf/.windsurfrules
   Codex          → dist/codex/AGENTS.md
   Generic        → dist/generic/webforge-instructions.md
