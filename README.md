@@ -269,7 +269,6 @@ webforge/
 │   ├── build.js                 # Multi-provider build system
 │   ├── providers.js             # Provider configurations
 │   └── lib/utils.js             # Frontmatter parser, file discovery
-├── site/                        # Landing page
 ├── CLAUDE.md                    # Project context for Claude Code
 ├── package.json
 ├── LICENSE                      # Apache 2.0

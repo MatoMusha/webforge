@@ -59,7 +59,6 @@ webforge/
 │   ├── build.js                 # Multi-provider build
 │   ├── providers.js             # Provider configurations
 │   └── lib/utils.js             # Utilities
-├── site/                        # Landing page
 ├── CLAUDE.md
 ├── package.json
 └── LICENSE
