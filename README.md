@@ -1,299 +1,303 @@
-# Webflo
+<p align="center">
+  <strong>webflo</strong><br>
+  <em>Design agents that interview you, generate design systems, and build production-grade code.</em>
+</p>
 
-AI-powered design agents that interview you about look and feel, generate complete design systems, and build production-grade frontend code — from a single prompt.
+<p align="center">
+  <img src="https://img.shields.io/badge/Cursor-supported-black?logo=cursor" alt="Cursor">
+  <img src="https://img.shields.io/badge/Claude_Code-supported-cc785c" alt="Claude Code">
+  <img src="https://img.shields.io/badge/Gemini_CLI-supported-4285F4?logo=google" alt="Gemini CLI">
+  <img src="https://img.shields.io/badge/Codex_CLI-supported-000?logo=openai" alt="Codex CLI">
+  <img src="https://img.shields.io/badge/Copilot-supported-000?logo=github" alt="Copilot">
+  <img src="https://img.shields.io/badge/Antigravity-supported-4285F4?logo=google" alt="Antigravity">
+  <img src="https://img.shields.io/badge/license-Apache_2.0-blue" alt="License">
+</p>
 
-Works with **Claude Code**, **Cursor**, **Gemini CLI**, **Windsurf**, **Codex**, and any AI coding tool.
+---
 
-## What It Does
+## How it works
 
-Instead of manually piecing together color palettes, type scales, spacing systems, and components, webflo coordinates specialized agents that handle the full pipeline:
-
-1. **Director** scans your project — detects existing styles, tokens, and conventions
-2. **Strategist** interviews you about aesthetic preferences — mood, colors, typography, theme — then generates a complete OKLCH token system
-3. **Builder** creates production-grade pages using your tokens — HTML, CSS, and vanilla JS served through Vite
-4. **Reviewer** checks every file for simplicity, cleanliness, and security before you see the result
+You prompt naturally. Webflo's agents handle the rest — interviewing you about aesthetics, generating a token system, building the code, and reviewing it before you see anything.
 
 ```
-You: "build me a landing page for a coffee brand"
+You:        "build me a landing page for a coffee brand"
 
-Director: Scanning project... No design system found.
-Strategist: What mood are you going for?
-You: warm, organic, earthy
-Strategist: Generated palette: terracotta + warm cream + sage. Approve?
-You: yes
-Reviewer: All files pass — no security issues, clean code, tokens used throughout.
-Builder: Dev server running at localhost:5173.
+Director:    Scanning project... no design system found.
+Strategist:  What mood are you going for?
+You:         warm, organic, earthy
+Strategist:  Generated palette — terracotta + warm cream + sage. Approve?
+You:         yes
+Builder:     Creating pages with your tokens...
+Reviewer:    All files pass. Clean code, no security issues.
+             Dev server running at localhost:5173
 ```
 
-## Human-in-the-Loop
+---
 
-Webflo never makes design decisions for you. Every agent has mandatory approval checkpoints (⛔) that physically block execution until you respond.
+## The pipeline
 
-**How enforcement works per tool:**
+```
+                    ┌─────────────────────────────┐
+                    │         You prompt           │
+                    └──────────────┬──────────────┘
+                                   │
+                    ┌──────────────▼──────────────┐
+                    │      Director  (scan)        │
+                    │  detects project context,    │
+                    │  design system status        │
+                    └──────────────┬──────────────┘
+                                   │
+                 ┌─── has design system? ───┐
+                 │ no                       │ yes
+     ┌───────────▼──────────┐              │
+     │   Strategist          │              │
+     │   interviews you,     │              │
+     │   generates tokens    │              │
+     │   ⛔ waits for        │              │
+     │     your approval     │              │
+     └───────────┬──────────┘              │
+                 │                          │
+                 └──────────┬───────────────┘
+                            │
+             ┌──────────────▼──────────────┐
+             │  Design brief presented      │
+             │  ⛔ waits for your approval  │
+             └──────────────┬──────────────┘
+                            │
+             ┌──────────────▼──────────────┐
+             │       Builder  (code)        │
+             │  Vite + vanilla HTML/CSS/JS  │
+             └──────────────┬──────────────┘
+                            │
+             ┌──────────────▼──────────────┐
+             │      Reviewer  (quality)     │
+             │  simplicity, security, a11y  │
+             └──────────────┬──────────────┘
+                            │
+                    ┌───────▼───────┐
+                    │  Dev server   │
+                    │   launched    │
+                    └───────────────┘
+```
 
-| Tool | Mechanism |
-|------|-----------|
-| Claude Code | `AskUserQuestion` tool call — hard block |
-| Gemini CLI | `ask_user` tool call — hard block |
-| Cursor | `ask_followup_question` if available, otherwise stops generating |
-| Windsurf | `suggested_responses` if available, otherwise stops generating |
-| Codex / Generic | Stops generating and waits for your next message |
+Every ⛔ is a hard stop — no code is written until you approve the direction.
 
-**What gets blocked:**
-- Design system interview questions — asks in small groups, waits for your answers
-- Token/palette approval — presents the generated system, waits for explicit approval
-- Design brief approval — presents the plan, waits for your "go ahead"
-- Security issues — reviewer flags anything that needs your input
+---
 
-No code is written until you've approved the direction. If you want changes, just say so — the agents will adjust and re-present.
+## What it generates
+
+| Category | Details |
+|:---------|:--------|
+| **Color** | OKLCH palette, tinted neutrals, semantic colors, dark mode |
+| **Typography** | Distinctive fonts, fluid `clamp()` scale, proper line-heights |
+| **Spacing** | 4pt grid with semantic token names |
+| **Motion** | Duration tiers, exponential easing, `prefers-reduced-motion` |
+| **Layout** | Clean/safe or bold/experimental — grids, scroll effects, clip-path |
+| **Components** | Semantic HTML, 8 interaction states, keyboard nav, WCAG AA |
+| **Output** | Vite dev server — vanilla HTML + CSS + JS with hot reload |
+
+---
 
 ## Installation
 
-### Claude Code
+<details>
+<summary><strong>Cursor</strong></summary>
 
-**Option 1: Install as a plugin (recommended)**
+```bash
+git clone https://github.com/MatoMusha/webflo.git
+cd webflo && node scripts/build.js
+
+cp -r dist/cursor/.cursor/ /path/to/your-project/.cursor/
+```
+
+Outputs `.mdc` rule files to `.cursor/rules/` — includes a phase-locked enforcer that prevents the model from skipping approval gates.
+
+</details>
+
+<details>
+<summary><strong>Claude Code</strong></summary>
+
+**Plugin install (recommended):**
 
 ```bash
 claude /plugin install MatoMusha/webflo
 ```
 
-That's it. The plugin provides all five agents to any project you open in Claude Code.
-
-To test a local copy during development:
-
-```bash
-git clone https://github.com/MatoMusha/webflo.git
-claude --plugin-dir ~/webflo
-```
-
-**Option 2: Copy skills into your project**
+**Or copy skills manually:**
 
 ```bash
 git clone https://github.com/MatoMusha/webflo.git
 cd webflo && node scripts/build.js
 
-# Copy the built skills into your project
 cp -r .claude/skills/ /path/to/your-project/.claude/skills/
 ```
 
-Now start Claude Code in your project directory. The agents will auto-trigger when you ask to build something.
+</details>
 
-### Cursor
-
-```bash
-git clone https://github.com/MatoMusha/webflo.git
-cd webflo && node scripts/build.js
-
-# Copy the rules into your project
-cp -r dist/cursor/.cursor/ /path/to/your-project/.cursor/
-```
-
-Webflo outputs individual `.mdc` rule files to `.cursor/rules/`. Cursor auto-loads the pipeline rules (which enforce the approval gates) and pulls in agent-specific rules as needed. This split format ensures the model gives proper attention to each instruction.
-
-### Windsurf
+<details>
+<summary><strong>Gemini CLI</strong></summary>
 
 ```bash
 git clone https://github.com/MatoMusha/webflo.git
 cd webflo && node scripts/build.js
 
-# Copy the rules file into your project root
-cp dist/windsurf/.windsurfrules /path/to/your-project/.windsurfrules
-```
-
-### Gemini CLI
-
-```bash
-git clone https://github.com/MatoMusha/webflo.git
-cd webflo && node scripts/build.js
-
-# Copy the GEMINI.md file into your project root
 cp dist/gemini-cli/GEMINI.md /path/to/your-project/GEMINI.md
 ```
 
-### Codex (OpenAI)
+</details>
+
+<details>
+<summary><strong>Codex CLI</strong></summary>
 
 ```bash
 git clone https://github.com/MatoMusha/webflo.git
 cd webflo && node scripts/build.js
 
-# Copy the agents file into your project root
 cp dist/codex/AGENTS.md /path/to/your-project/AGENTS.md
 ```
 
-### Any Other AI Tool
+</details>
+
+<details>
+<summary><strong>Copilot</strong></summary>
 
 ```bash
 git clone https://github.com/MatoMusha/webflo.git
 cd webflo && node scripts/build.js
 
-# Use the generic instructions file
+mkdir -p /path/to/your-project/.github
+cp dist/copilot/.github/copilot-instructions.md /path/to/your-project/.github/copilot-instructions.md
+```
+
+</details>
+
+<details>
+<summary><strong>Antigravity</strong></summary>
+
+```bash
+git clone https://github.com/MatoMusha/webflo.git
+cd webflo && node scripts/build.js
+
+cp -r dist/antigravity/skills/ /path/to/your-project/.agent/skills/
+```
+
+</details>
+
+<details>
+<summary><strong>Any other AI tool</strong></summary>
+
+```bash
+git clone https://github.com/MatoMusha/webflo.git
+cd webflo && node scripts/build.js
+
 cat dist/generic/webflo-instructions.md
 ```
 
-Copy the contents of `webflo-instructions.md` into your AI tool's system prompt, project instructions, or custom rules file.
+Copy the contents into your AI tool's system prompt, project instructions, or custom rules file.
+
+</details>
+
+---
 
 ## Usage
 
-Once installed, just prompt naturally. No slash commands needed.
+Just prompt. No slash commands.
 
-### Build from scratch (no existing design system)
+> "Build me a landing page for a SaaS product"
 
-```
-"Build me a landing page for a SaaS product"
-```
+The Strategist asks you about purpose, mood, colors, typography, layout style, and theme — then generates a complete token system for your approval.
 
-The Director detects no design system exists and triggers the Strategist, which will ask you:
+> "Build me a portfolio site with home, work, about, and contact pages"
 
-1. **Purpose & audience** — What is this for? Who uses it?
-2. **Mood** — Pick 3 words (bold, playful, refined, minimal, warm, etc.)
-3. **Colors** — Brand colors or generate a palette? Warm, cool, monochrome?
-4. **Typography** — Serif, sans-serif, mono, or mixed?
-5. **Layout style** — Clean/balanced or bold/experimental? (affects grids, typography contrast, spacing, scroll effects)
-6. **Theme** — Light, dark, or both?
+The Director detects multi-page structure — shared nav via JS module, `aria-current="page"` states, per-page meta, Vite multi-page config.
 
-After you answer, the Strategist generates a complete token system (OKLCH color palette, type scale, spacing, motion, layout style, border radius) and asks you to approve. Then the Builder creates your pages, the Reviewer checks code quality, and the dev server launches.
+> "Add a pricing section to the marketing page"
 
-### Build a multi-page site
+Existing tokens detected — skips the interview, builds on your design system.
 
-```
-"Build me a portfolio site with home, work, about, and contact pages"
-```
+---
 
-The Director detects distinct pages and sets up a multi-page structure — shared navigation injected via a JS module, `aria-current="page"` active states, per-page `<title>` and meta, Vite multi-page build config. Each page gets its own directory (`work/index.html`, `about/index.html`, etc.).
+## Human-in-the-loop enforcement
 
-### Build with existing design system
+Every tool gets the strongest blocking mechanism available to it:
 
-```
-"Add a pricing section to the marketing page"
-```
+| Tool | How it blocks |
+|:-----|:--------------|
+| **Claude Code** | `AskUserQuestion` — hard tool-call block |
+| **Gemini CLI** | `ask_user` — hard tool-call block |
+| **Cursor** | Phase declarations `[PHASE X]` + `ask_followup_question` |
+| **Codex CLI** | Phase declarations + structured `approval-required` blocks |
+| **Copilot / Antigravity** | Stops generating, waits for your next message |
 
-The Director detects your existing tokens (CSS custom properties, stylesheets) and skips the Strategist interview. It creates a design brief based on your existing system, presents it for your approval, then passes it to the Builder.
+**What requires your approval:**
 
-### What the agents generate
+- Design system interview answers (asked in small groups)
+- Token/palette sign-off
+- Design brief before any code is written
+- Security issues flagged by the reviewer
 
-| Output | Details |
-|--------|---------|
-| **Color palette** | OKLCH tokens, tinted neutrals, semantic colors, dark mode |
-| **Typography** | Distinctive fonts, fluid type scale with `clamp()`, proper line-heights |
-| **Spacing** | 4pt grid system with semantic token names |
-| **Motion** | Duration tiers, exponential easing curves, reduced motion support |
-| **Layout style** | Clean/safe or bold/experimental — affects grids, typography, scroll effects |
-| **Components** | Semantic HTML, all 8 interaction states, keyboard navigation, WCAG AA |
-| **Output** | Vite dev server project — vanilla HTML + CSS + JS with hot reload |
+---
 
 ## Agents
 
-### Director
+<table>
+<tr>
+<td width="140"><strong>Director</strong></td>
+<td>The orchestrator. Scans your project — framework, tokens, fonts, existing styles. Routes to Strategist if no design system exists. Presents the design brief for your approval before anything gets built.</td>
+</tr>
+<tr>
+<td><strong>Strategist</strong></td>
+<td>The design system architect. Interviews you about look and feel, then generates OKLCH palette, type scale, spacing, motion tokens, and border radius. Waits for your approval before writing any files.</td>
+</tr>
+<tr>
+<td><strong>Builder</strong></td>
+<td>The code creator. Takes approved brief + tokens, builds a Vite project with vanilla HTML/CSS/JS. Handles single or multi-page, clean or bold layouts, all interactive states, responsive, accessible.</td>
+</tr>
+<tr>
+<td><strong>Reviewer</strong></td>
+<td>The quality gate. Checks every file for simplicity (no dead code, minimal JS), cleanliness (semantic HTML, tokens used), and security (no innerHTML, no eval, CSP ready). Fixes issues directly.</td>
+</tr>
+<tr>
+<td><strong>Design System</strong></td>
+<td>Shared knowledge library. 7 reference files covering typography, color, spatial, motion, interaction, responsive, and writing. All agents consult this for implementation decisions.</td>
+</tr>
+</table>
 
-The orchestrator. Scans your project to detect:
-- Existing HTML/CSS files and page structure
-- Design system status (tokens, palette, fonts)
-- Styling approach (CSS custom properties, linked stylesheets)
+---
 
-Then routes the pipeline: Strategist (if no design system) → presents design brief for your approval → Builder → Reviewer.
+## Anti-patterns it avoids
 
-### Strategist
+Webflo is trained to reject common AI-generated design fingerprints:
 
-The design system architect. Interviews you about look and feel, then generates:
-- Complete OKLCH color palette (primary, neutrals, semantic, surfaces)
-- Typography system (distinctive fonts, fluid scale, line-heights)
-- Spacing scale (4pt base with semantic names)
-- Motion tokens (durations, easing curves)
-- Border radius (mapped to mood)
+> Cyan-on-dark · purple-to-blue gradients · gradient text on headings · cards in cards · glassmorphism without purpose · big icons above every heading · everything centered · bounce easing · pure black/white · Inter/Roboto/Open Sans as defaults · hero metric layouts · lorem ipsum
 
-Outputs as CSS custom properties. Waits for your approval before generating any files.
+---
 
-### Builder
-
-The code creator. Takes the approved design brief and tokens, then builds:
-- Vite dev server project — vanilla HTML, CSS, and JS with hot reload
-- Single-page or multi-page sites (shared nav, per-page meta, Vite multi-page config)
-- Layout style implementation — clean/safe (symmetric, consistent) or bold/experimental (asymmetric grids, oversized type, scroll effects, clip-path)
-- Semantic HTML with all interactive states (hover, focus-visible, active, disabled)
-- Responsive layouts (mobile-first)
-- Accessibility (WCAG AA contrast, keyboard navigation, screen reader support, `aria-current="page"`)
-- Motion with `prefers-reduced-motion` support
-- Will not start until the design brief has been approved by you
-
-### Reviewer
-
-The quality gate. Runs after the Builder, before you see the result. Checks every file for:
-- **Simplicity** — no unnecessary abstractions, minimal JS, no dead code
-- **Cleanliness** — semantic HTML, design tokens used throughout, no redundant wrappers
-- **Security** — no `innerHTML` with dynamic content, no `eval()`, no inline event handlers, external links secured, CSP compatible
-
-Fixes issues directly rather than just reporting them. Outputs a structured checklist summary.
-
-### Design System (Knowledge Library)
-
-Shared reference material that all agents consult. Covers 7 domains:
-
-| Domain | What it covers |
-|--------|---------------|
-| Typography | Type scales, font selection, loading, hierarchy, OpenType features |
-| Color | OKLCH, palette building, contrast, dark mode, tinted neutrals |
-| Spatial | Spacing systems, grids, visual hierarchy, container queries, depth |
-| Motion | Duration rules, easing curves, reduced motion, perceived performance |
-| Interaction | 8 interactive states, focus rings, forms, modals, keyboard navigation |
-| Responsive | Mobile-first, breakpoints, input detection, safe areas, images |
-| Writing | Button labels, error messages, empty states, voice, translation |
-
-## Anti-Patterns (What It Avoids)
-
-Webflo is trained to avoid common AI-generated design patterns:
-
-- Cyan-on-dark, purple-to-blue gradients, neon accents
-- Gradient text on headings
-- Cards nested in cards, identical card grids everywhere
-- Glassmorphism without purpose
-- Big rounded-corner icons above every heading
-- Everything centered, same spacing everywhere
-- Bounce/elastic easing
-- Pure black (#000) or pure white (#fff)
-- Inter, Roboto, Open Sans as defaults
-- Hero metric layouts (big number + gradient accent)
-- Generic lorem ipsum content
-
-## Project Structure
+## Project structure
 
 ```
 webflo/
-├── source/skills/               # Source files (edit these)
-│   ├── director/SKILL.md        # Orchestrator agent
-│   ├── strategist/SKILL.md      # Design system architect
-│   ├── builder/                 # Code creator
-│   │   ├── SKILL.md
-│   │   └── reference/
-│   │       ├── component-patterns.md
-│   │       └── code-quality.md
-│   ├── reviewer/SKILL.md        # Code quality agent
-│   └── design-system/           # Shared knowledge library
-│       ├── SKILL.md
-│       └── reference/
-│           ├── typography.md
-│           ├── color.md
-│           ├── spatial.md
-│           ├── motion.md
-│           ├── interaction.md
-│           ├── responsive.md
-│           └── writing.md
-├── .claude-plugin/              # Claude Code plugin manifest
-├── skills/                      # Built output (plugin distribution)
-├── .claude/skills/              # Built output (local Claude Code use)
-├── dist/                        # Built output (all providers)
+├── source/skills/            ← edit these
+│   ├── director/
+│   ├── strategist/
+│   ├── builder/              (+ reference/)
+│   ├── reviewer/
+│   ├── enforcer/
+│   └── design-system/        (+ reference/ × 7)
 ├── scripts/
-│   ├── build.js                 # Multi-provider build system
-│   ├── providers.js             # Provider configurations
-│   └── lib/utils.js             # Frontmatter parser, file discovery
-├── CLAUDE.md                    # Project context for Claude Code
-├── package.json
-├── LICENSE                      # Apache 2.0
-└── README.md                    # This file
+│   ├── build.js              multi-provider build
+│   ├── providers.js          provider configs
+│   └── lib/utils.js
+├── dist/                     ← built output per provider
+├── .claude-plugin/           plugin manifest
+├── .claude/skills/           built: Claude Code
+├── skills/                   built: plugin distribution
+└── package.json
 ```
 
-## Building from Source
+---
 
-Requires Node.js 18+.
+## Building from source
 
 ```bash
 git clone https://github.com/MatoMusha/webflo.git
@@ -301,75 +305,63 @@ cd webflo
 node scripts/build.js
 ```
 
-Output:
 ```
-webflo build
-==============
-
-Source: 5 skills, 9 reference files
+Source: 6 skills, 9 reference files
 
 Building providers:
-  Claude Code    → dist/claude-code/skills/ (14 files)
-  Cursor         → dist/cursor/.cursor/rules/ (6 files)
-  Windsurf       → dist/windsurf/.windsurfrules
+  Claude Code    → dist/claude-code/skills/ (15 files)
+  Cursor         → dist/cursor/.cursor/rules/ (7 files)
   Gemini CLI     → dist/gemini-cli/GEMINI.md
   Codex          → dist/codex/AGENTS.md
+  Copilot        → dist/copilot/.github/copilot-instructions.md
+  Antigravity    → dist/antigravity/skills/ (15 files)
   Generic        → dist/generic/webflo-instructions.md
-
-  + .claude/skills/ (local Claude Code use)
-  + skills/ (plugin distribution)
 ```
 
-To rebuild after editing source files:
+Rebuild after edits: `npm run rebuild`
 
-```bash
-npm run rebuild
-```
+---
 
-## Adding a New Provider
+## Adding a provider
 
 Edit `scripts/providers.js`:
 
 ```js
-export const providers = {
-  // ... existing providers ...
-
-  'my-tool': {
-    name: 'My Tool',
-    model: 'the AI model',
-    outputDir: 'my-tool',
-    structure: 'single-file',      // or 'skills-dir'
-    outputFile: '.my-tool-rules',
-    keepFrontmatter: false,
-    hitlMechanism: HITL_STOP_GENERATING,
-  },
-};
+'my-tool': {
+  name: 'My Tool',
+  model: 'the AI model',
+  outputDir: 'my-tool',
+  structure: 'single-file',       // or 'skills-dir', 'mdc-rules'
+  outputFile: '.my-tool-rules',
+  keepFrontmatter: false,
+  hitlMechanism: HITL_STOP_GENERATING,
+},
 ```
 
-Run `node scripts/build.js` and find your output in `dist/my-tool/`.
+Run `node scripts/build.js` → output in `dist/my-tool/`.
 
-## Contributing
-
-Webflo is open source under the Apache 2.0 license.
-
-To add or modify agents:
-
-1. Edit the SKILL.md in `source/skills/<agent-name>/`
-2. Add reference files in `reference/` if the agent needs domain knowledge
-3. Update the Director's routing logic if adding a new agent
-4. Run `node scripts/build.js` and test
-5. Submit a PR
+---
 
 ## Roadmap
 
-Agents planned but not yet built:
+| Agent | Purpose |
+|:------|:--------|
+| **Critic** | Visual quality review, design consistency audit |
+| **Hardener** | Accessibility deep-dive, i18n, error handling |
+| **Optimizer** | Performance, bundle size, loading strategy |
+| **Polisher** | Spacing, alignment, animation timing |
+| **Writer** | Content and microcopy |
 
-- **Critic** — Visual quality review, design consistency audit
-- **Hardener** — Accessibility deep-dive, i18n, error handling, edge cases
-- **Optimizer** — Performance, bundle size, loading strategy
-- **Polisher** — Final refinement pass (spacing, alignment, animation timing)
-- **Writer** — Content and microcopy (labels, error messages, empty states)
+---
 
-## License
+## Contributing
 
-Apache 2.0 — see [LICENSE](LICENSE) for details.
+1. Edit `source/skills/<agent>/SKILL.md`
+2. Add references in `reference/` if needed
+3. Update Director routing for new agents
+4. `node scripts/build.js` and test
+5. Submit a PR
+
+---
+
+<sub>Apache 2.0 — see <a href="LICENSE">LICENSE</a></sub>

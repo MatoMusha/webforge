@@ -2,7 +2,7 @@
 
 ## About
 
-AI-powered design agents that interview you about look and feel, generate design systems, and build production-grade code. Works with any AI coding tool — Claude Code, Cursor, Windsurf, Codex, and more.
+AI-powered design agents that interview you about look and feel, generate design systems, and build production-grade code. Works with any AI coding tool — Cursor, Claude Code, Gemini CLI, Codex CLI, Copilot, Antigravity, and more.
 
 ## How It Works
 
@@ -54,9 +54,10 @@ webflo/
 ├── dist/                        # Built: all providers
 │   ├── claude-code/skills/      #   Claude Code (skill dirs)
 │   ├── cursor/.cursor/rules/    #   Cursor (.mdc rule files)
-│   ├── windsurf/.windsurfrules  #   Windsurf (single file)
 │   ├── gemini-cli/GEMINI.md     #   Gemini CLI (single file)
-│   ├── codex/AGENTS.md          #   Codex (single file)
+│   ├── codex/AGENTS.md          #   Codex CLI (single file)
+│   ├── copilot/.github/         #   Copilot (instructions file)
+│   ├── antigravity/skills/      #   Antigravity (skill dirs)
 │   └── generic/webflo-instructions.md
 ├── scripts/
 │   ├── build.js                 # Multi-provider build
@@ -69,15 +70,16 @@ webflo/
 
 ## Multi-Model Support
 
-The build system outputs to 6 providers from a single source:
+The build system outputs to 7 providers from a single source:
 
 | Provider | Format | Output |
 |----------|--------|--------|
-| Claude Code | Skill directories | `dist/claude-code/skills/` |
 | Cursor | .mdc rule files | `dist/cursor/.cursor/rules/` |
-| Windsurf | Single rules file | `dist/windsurf/.windsurfrules` |
+| Claude Code | Skill directories | `dist/claude-code/skills/` |
 | Gemini CLI | GEMINI.md | `dist/gemini-cli/GEMINI.md` |
-| Codex | Agent instructions | `dist/codex/AGENTS.md` |
+| Codex CLI | Agent instructions | `dist/codex/AGENTS.md` |
+| Copilot | Instructions file | `dist/copilot/.github/copilot-instructions.md` |
+| Antigravity | Skill directories | `dist/antigravity/skills/` |
 | Generic | Markdown | `dist/generic/webflo-instructions.md` |
 
 Use `{{model}}` in source files — replaced with provider-specific model name during build.

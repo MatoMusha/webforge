@@ -83,10 +83,11 @@ function stripDeadLinks(content) {
 }
 
 /**
- * Build for Claude Code — skills-dir structure.
+ * Build for skills-dir providers (Claude Code, Antigravity).
  * Each skill gets its own directory with SKILL.md + reference files.
+ * Claude Code also writes to .claude/skills/ and skills/ (plugin distribution).
  */
-async function buildClaudeCode(files, provider) {
+async function buildSkillsDir(files, provider, key) {
   const providerDir = join(DIST_OUT, provider.outputDir);
   let count = 0;
 
@@ -94,15 +95,16 @@ async function buildClaudeCode(files, provider) {
     const content = await safeReadFile(file.path);
     const transformed = applyPlaceholders(content, provider);
 
-    // Validate output paths stay within expected directories
-    const localDest = safePath(join(CLAUDE_OUT, 'skills'), file.relativePath);
-    await ensureDir(dirname(localDest));
-    await writeFile(localDest, transformed);
+    // Claude Code gets extra outputs for local use and plugin distribution
+    if (key === 'claude-code') {
+      const localDest = safePath(join(CLAUDE_OUT, 'skills'), file.relativePath);
+      await ensureDir(dirname(localDest));
+      await writeFile(localDest, transformed);
 
-    // Plugin output (root-level skills/)
-    const pluginDest = safePath(PLUGIN_OUT, file.relativePath);
-    await ensureDir(dirname(pluginDest));
-    await writeFile(pluginDest, transformed);
+      const pluginDest = safePath(PLUGIN_OUT, file.relativePath);
+      await ensureDir(dirname(pluginDest));
+      await writeFile(pluginDest, transformed);
+    }
 
     const distDest = safePath(join(providerDir, 'skills'), file.relativePath);
     await ensureDir(dirname(distDest));
@@ -115,7 +117,7 @@ async function buildClaudeCode(files, provider) {
 }
 
 /**
- * Build for single-file providers (Cursor, Windsurf, Codex, Generic).
+ * Build for single-file providers (Gemini CLI, Codex, Copilot, Generic).
  * Merges all skills + references into one file.
  */
 async function buildSingleFile(files, provider) {
@@ -188,6 +190,7 @@ async function buildSingleFile(files, provider) {
     provider
   );
   const outPath = join(providerDir, provider.outputFile);
+  await ensureDir(dirname(outPath));
   await writeFile(outPath, merged);
 
   return 1;
@@ -211,6 +214,19 @@ async function buildMdcRules(files, provider) {
   }
 
   let count = 0;
+
+  // --- Rule 0: Enforcer (always active, highest priority) ---
+  if (grouped['enforcer']) {
+    const skillMd = grouped['enforcer'].find(f => basename(f.path) === 'SKILL.md');
+    if (skillMd) {
+      let content = await safeReadFile(skillMd.path);
+      content = stripFrontmatter(content);
+      content = applyPlaceholders(content, provider);
+      const mdcContent = `---\ndescription: "Webflo pipeline enforcer — always active, overrides all other instructions on phase sequencing"\nalwaysApply: true\n---\n\n${content.trim()}\n`;
+      await writeFile(join(rulesDir, '00-enforcer.mdc'), mdcContent);
+      count++;
+    }
+  }
 
   // --- Rule 1: Pipeline behavior (the critical one) ---
   const pipelineContent = `---
@@ -402,7 +418,7 @@ async function build() {
   // Build each provider
   for (const [key, provider] of Object.entries(providers)) {
     if (provider.structure === 'skills-dir') {
-      const count = await buildClaudeCode(files, provider);
+      const count = await buildSkillsDir(files, provider, key);
       console.log(`  ${provider.name.padEnd(14)} → dist/${provider.outputDir}/skills/ (${count} files)`);
     } else if (provider.structure === 'mdc-rules') {
       const count = await buildMdcRules(files, provider);

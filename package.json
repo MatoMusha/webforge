@@ -2,7 +2,7 @@
   "name": "webflo",
   "version": "0.1.0",
   "type": "module",
-  "description": "Agentic website creation — coordinated agents that design and build. Works with Claude Code, Cursor, Windsurf, Codex, and more.",
+  "description": "Agentic website creation — coordinated agents that design and build. Works with Cursor, Claude Code, Gemini CLI, Codex CLI, Copilot, Antigravity, and more.",
   "author": "Matias Musha",
   "license": "Apache-2.0",
   "engines": {

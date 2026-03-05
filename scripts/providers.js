@@ -27,30 +27,23 @@ const HITL_CURSOR = `This workflow is divided into PHASES. You may only execute 
 4. BUILD — Create the code. End your response.
 5. REVIEW & LAUNCH — Review code quality, start dev server. End your response.
 
+**Every response MUST start with a phase declaration on the first line:**
+\`[PHASE X — PHASE NAME]\`
+
+If the previous phase was not completed and explicitly approved by the user, start with:
+\`[BLOCKED — waiting for user approval of Phase X]\`
+then stop. Write nothing else.
+
 **Rules:**
+- ONE phase per response. Never two.
 - At every ⛔ checkpoint, you have reached the END of the current phase.
 - If \`ask_followup_question\` is available, call it to present the ⛔ question and block until the user responds.
 - Otherwise, output the ⛔ question as the LAST line of your response, then STOP. Do not write anything after it.
 - Do NOT begin the next phase in the same response. The user must reply first.
 - Before starting any phase, check that the previous phase was completed AND the user replied with approval.
-- If you find yourself writing code and you have not yet received explicit user approval for the design brief, STOP IMMEDIATELY — you have skipped phases.`;
+- If you find yourself writing code and you have not yet received explicit user approval for the design brief, STOP IMMEDIATELY — you have skipped phases.
+- Writing code without an approved design brief is a critical failure. If you detect this, stop, delete what you wrote, and output \`[BLOCKED — design brief was never approved]\`.`;
 
-const HITL_WINDSURF = `This workflow is divided into PHASES. You may only execute ONE PHASE per response.
-
-**Phase structure:**
-1. STRATEGIST INTERVIEW — Each question group (1–5) is a separate phase. Ask the questions, then end your response.
-2. TOKEN APPROVAL — Present the generated tokens. End your response.
-3. DESIGN BRIEF — Present the brief. End your response.
-4. BUILD — Create the code. End your response.
-5. REVIEW & LAUNCH — Review code quality, start dev server. End your response.
-
-**Rules:**
-- At every ⛔ checkpoint, you have reached the END of the current phase.
-- If \`suggested_responses\` is available, call it to present answer options for the user to select.
-- Otherwise, output the ⛔ question as the LAST line of your response, then STOP. Do not write anything after it.
-- Do NOT begin the next phase in the same response. The user must reply first.
-- Before starting any phase, check that the previous phase was completed AND the user replied with approval.
-- If you find yourself writing code and you have not yet received explicit user approval for the design brief, STOP IMMEDIATELY — you have skipped phases.`;
 
 const HITL_CODEX = `This workflow is divided into PHASES. You may only execute ONE PHASE per response.
 
@@ -61,12 +54,27 @@ const HITL_CODEX = `This workflow is divided into PHASES. You may only execute O
 4. BUILD — Create the code. End your response.
 5. REVIEW & LAUNCH — Review code quality, start dev server. End your response.
 
+**Every response MUST start with a phase declaration on the first line:**
+\`[PHASE X — PHASE NAME]\`
+
+If the previous phase was not completed and explicitly approved by the user, start with:
+\`[BLOCKED — waiting for user approval of Phase X]\`
+then stop. Write nothing else.
+
+**At every ⛔ checkpoint, output this block and nothing after it:**
+\`\`\`approval-required
+phase: <current phase name>
+question: <the approval question>
+options: ["Approve", "Request changes"]
+\`\`\`
+
 **Rules:**
-- At every ⛔ checkpoint, you have reached the END of the current phase.
-- Output the ⛔ question as the LAST line of your response, then STOP. Do not write anything after it.
+- ONE phase per response. Never two.
+- At every ⛔ checkpoint, output the approval-required block as the LAST thing in your response, then STOP.
 - Do NOT begin the next phase in the same response. The user must reply first.
-- Before starting any phase, check that the previous phase was completed AND the user replied with approval.
-- If you find yourself writing code and you have not yet received explicit user approval for the design brief, STOP IMMEDIATELY — you have skipped phases.`;
+- Before starting any phase, verify the previous phase was completed AND the user replied with explicit approval.
+- If you find yourself writing code without an approved design brief, STOP IMMEDIATELY — output \`[BLOCKED — design brief was never approved]\` and nothing else.
+- Writing code before design brief approval is a critical failure.`;
 
 const HITL_STOP_GENERATING = `At every ⛔ checkpoint, you MUST completely stop generating. End your response at the ⛔ question. Do NOT output any text, code, or content past it. Wait for the user's next message before continuing.`;
 
@@ -93,17 +101,6 @@ export const providers = {
     hitlMechanism: HITL_CURSOR,
   },
 
-  windsurf: {
-    name: 'Windsurf',
-    model: 'the AI model',
-    outputDir: 'windsurf',
-    // All skills merged into .windsurfrules
-    structure: 'single-file',
-    outputFile: '.windsurfrules',
-    keepFrontmatter: false,
-    hitlMechanism: HITL_WINDSURF,
-  },
-
   'gemini-cli': {
     name: 'Gemini CLI',
     model: 'Gemini',
@@ -124,6 +121,28 @@ export const providers = {
     outputFile: 'AGENTS.md',
     keepFrontmatter: false,
     hitlMechanism: HITL_CODEX,
+  },
+
+  copilot: {
+    name: 'Copilot',
+    model: 'the AI model',
+    outputDir: 'copilot',
+    // All skills merged into .github/copilot-instructions.md
+    structure: 'single-file',
+    outputFile: '.github/copilot-instructions.md',
+    keepFrontmatter: false,
+    hitlMechanism: HITL_STOP_GENERATING,
+  },
+
+  antigravity: {
+    name: 'Antigravity',
+    model: 'Gemini',
+    outputDir: 'antigravity',
+    // Skills go into .agent/skills/<name>/SKILL.md
+    structure: 'skills-dir',
+    skillFileName: 'SKILL.md',
+    keepFrontmatter: true,
+    hitlMechanism: HITL_STOP_GENERATING,
   },
 
   generic: {
