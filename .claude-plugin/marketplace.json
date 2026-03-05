@@ -1,9 +1,9 @@
 {
-  "slug": "webflo",
-  "displayName": "Webflo",
+  "slug": "sitechain",
+  "displayName": "Sitechain",
   "tagline": "Agentic website creation with coordinated design + build agents",
   "category": "design",
   "tags": ["web-design", "frontend", "agents", "design-system"],
-  "repository": "https://github.com/MatoMusha/webflo",
+  "repository": "https://github.com/MatoMusha/sitechain",
   "minClaudeCodeVersion": "1.0.0"
 }

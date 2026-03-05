@@ -1,6 +1,6 @@
 ---
 name: 000-pipeline-enforcer
-description: Pipeline phase enforcement for webflo — always active, overrides all other instructions on phase sequencing
+description: Pipeline phase enforcement for sitechain — always active, overrides all other instructions on phase sequencing
 alwaysApply: true
 ---
 

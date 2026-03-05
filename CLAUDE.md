@@ -1,4 +1,4 @@
-# webflo — Agentic Website Creation
+# sitechain — Agentic Website Creation
 
 ## About
 
@@ -43,7 +43,7 @@ Director (auto-triggered)
 ## Project Structure
 
 ```
-webflo/
+sitechain/
 ├── .claude-plugin/              # Plugin manifest (Claude Code)
 ├── source/skills/               # Source — edit these
 │   ├── director/SKILL.md        # Orchestrator agent
@@ -58,7 +58,7 @@ webflo/
 │   ├── codex/AGENTS.md          #   Codex CLI (single file)
 │   ├── copilot/.github/         #   Copilot (instructions file)
 │   ├── antigravity/skills/      #   Antigravity (skill dirs)
-│   └── generic/webflo-instructions.md
+│   └── generic/sitechain-instructions.md
 ├── scripts/
 │   ├── build.js                 # Multi-provider build
 │   ├── providers.js             # Provider configurations
@@ -80,7 +80,7 @@ The build system outputs to 7 providers from a single source:
 | Codex CLI | Agent instructions | `dist/codex/AGENTS.md` |
 | Copilot | Instructions file | `dist/copilot/.github/copilot-instructions.md` |
 | Antigravity | Skill directories | `dist/antigravity/skills/` |
-| Generic | Markdown | `dist/generic/webflo-instructions.md` |
+| Generic | Markdown | `dist/generic/sitechain-instructions.md` |
 
 Use `{{model}}` in source files — replaced with provider-specific model name during build.
 

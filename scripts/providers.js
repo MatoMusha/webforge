@@ -149,9 +149,9 @@ export const providers = {
     name: 'Generic',
     model: 'the AI model',
     outputDir: 'generic',
-    // All skills merged into a single webflo-instructions.md
+    // All skills merged into a single sitechain-instructions.md
     structure: 'single-file',
-    outputFile: 'webflo-instructions.md',
+    outputFile: 'sitechain-instructions.md',
     keepFrontmatter: false,
     hitlMechanism: HITL_STOP_GENERATING,
   },

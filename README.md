@@ -1,5 +1,5 @@
 <p align="center">
-  <strong>webflo</strong><br>
+  <strong>sitechain</strong><br>
   <em>Design agents that interview you, generate design systems, and build production-grade code.</em>
 </p>
 
@@ -17,7 +17,7 @@
 
 ## How it works
 
-You prompt naturally. Webflo's agents handle the rest — interviewing you about aesthetics, generating a token system, building the code, and reviewing it before you see anything.
+You prompt naturally. Sitechain's agents handle the rest — interviewing you about aesthetics, generating a token system, building the code, and reviewing it before you see anything.
 
 ```
 You:        "build me a landing page for a coffee brand"
@@ -104,8 +104,8 @@ Every ⛔ is a hard stop — no code is written until you approve the direction.
 <summary><strong>Cursor</strong></summary>
 
 ```bash
-git clone https://github.com/MatoMusha/webflo.git
-cd webflo && node scripts/build.js
+git clone https://github.com/MatoMusha/sitechain.git
+cd sitechain && node scripts/build.js
 
 cp -r dist/cursor/.cursor/ /path/to/your-project/.cursor/
 ```
@@ -120,14 +120,14 @@ Outputs `.mdc` rule files to `.cursor/rules/` — includes a phase-locked enforc
 **Plugin install (recommended):**
 
 ```bash
-claude /plugin install MatoMusha/webflo
+claude /plugin install MatoMusha/sitechain
 ```
 
 **Or copy skills manually:**
 
 ```bash
-git clone https://github.com/MatoMusha/webflo.git
-cd webflo && node scripts/build.js
+git clone https://github.com/MatoMusha/sitechain.git
+cd sitechain && node scripts/build.js
 
 cp -r .claude/skills/ /path/to/your-project/.claude/skills/
 ```
@@ -138,8 +138,8 @@ cp -r .claude/skills/ /path/to/your-project/.claude/skills/
 <summary><strong>Gemini CLI</strong></summary>
 
 ```bash
-git clone https://github.com/MatoMusha/webflo.git
-cd webflo && node scripts/build.js
+git clone https://github.com/MatoMusha/sitechain.git
+cd sitechain && node scripts/build.js
 
 cp dist/gemini-cli/GEMINI.md /path/to/your-project/GEMINI.md
 ```
@@ -150,8 +150,8 @@ cp dist/gemini-cli/GEMINI.md /path/to/your-project/GEMINI.md
 <summary><strong>Codex CLI</strong></summary>
 
 ```bash
-git clone https://github.com/MatoMusha/webflo.git
-cd webflo && node scripts/build.js
+git clone https://github.com/MatoMusha/sitechain.git
+cd sitechain && node scripts/build.js
 
 cp dist/codex/AGENTS.md /path/to/your-project/AGENTS.md
 ```
@@ -162,8 +162,8 @@ cp dist/codex/AGENTS.md /path/to/your-project/AGENTS.md
 <summary><strong>Copilot</strong></summary>
 
 ```bash
-git clone https://github.com/MatoMusha/webflo.git
-cd webflo && node scripts/build.js
+git clone https://github.com/MatoMusha/sitechain.git
+cd sitechain && node scripts/build.js
 
 mkdir -p /path/to/your-project/.github
 cp dist/copilot/.github/copilot-instructions.md /path/to/your-project/.github/copilot-instructions.md
@@ -175,8 +175,8 @@ cp dist/copilot/.github/copilot-instructions.md /path/to/your-project/.github/co
 <summary><strong>Antigravity</strong></summary>
 
 ```bash
-git clone https://github.com/MatoMusha/webflo.git
-cd webflo && node scripts/build.js
+git clone https://github.com/MatoMusha/sitechain.git
+cd sitechain && node scripts/build.js
 
 cp -r dist/antigravity/skills/ /path/to/your-project/.agent/skills/
 ```
@@ -187,10 +187,10 @@ cp -r dist/antigravity/skills/ /path/to/your-project/.agent/skills/
 <summary><strong>Any other AI tool</strong></summary>
 
 ```bash
-git clone https://github.com/MatoMusha/webflo.git
-cd webflo && node scripts/build.js
+git clone https://github.com/MatoMusha/sitechain.git
+cd sitechain && node scripts/build.js
 
-cat dist/generic/webflo-instructions.md
+cat dist/generic/sitechain-instructions.md
 ```
 
 Copy the contents into your AI tool's system prompt, project instructions, or custom rules file.
@@ -267,7 +267,7 @@ Every tool gets the strongest blocking mechanism available to it:
 
 ## Anti-patterns it avoids
 
-Webflo is trained to reject common AI-generated design fingerprints:
+Sitechain is trained to reject common AI-generated design fingerprints:
 
 > Cyan-on-dark · purple-to-blue gradients · gradient text on headings · cards in cards · glassmorphism without purpose · big icons above every heading · everything centered · bounce easing · pure black/white · Inter/Roboto/Open Sans as defaults · hero metric layouts · lorem ipsum
 
@@ -276,7 +276,7 @@ Webflo is trained to reject common AI-generated design fingerprints:
 ## Project structure
 
 ```
-webflo/
+sitechain/
 ├── source/skills/            ← edit these
 │   ├── director/
 │   ├── strategist/
@@ -300,8 +300,8 @@ webflo/
 ## Building from source
 
 ```bash
-git clone https://github.com/MatoMusha/webflo.git
-cd webflo
+git clone https://github.com/MatoMusha/sitechain.git
+cd sitechain
 node scripts/build.js
 ```
 
@@ -315,7 +315,7 @@ Building providers:
   Codex          → dist/codex/AGENTS.md
   Copilot        → dist/copilot/.github/copilot-instructions.md
   Antigravity    → dist/antigravity/skills/ (15 files)
-  Generic        → dist/generic/webflo-instructions.md
+  Generic        → dist/generic/sitechain-instructions.md
 ```
 
 Rebuild after edits: `npm run rebuild`

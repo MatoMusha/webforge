@@ -1,5 +1,5 @@
 {
-  "name": "webflo",
+  "name": "sitechain",
   "version": "0.1.0",
   "type": "module",
   "description": "Agentic website creation — coordinated agents that design and build. Works with Cursor, Claude Code, Gemini CLI, Codex CLI, Copilot, Antigravity, and more.",
