@@ -1,9 +1,9 @@
 {
-  "slug": "webforge",
-  "displayName": "Webforge",
+  "slug": "webflo",
+  "displayName": "Webflo",
   "tagline": "Agentic website creation with coordinated design + build agents",
   "category": "design",
   "tags": ["web-design", "frontend", "agents", "design-system"],
-  "repository": "https://github.com/matiasmusha/webforge",
+  "repository": "https://github.com/matiasmusha/webflo",
   "minClaudeCodeVersion": "1.0.0"
 }

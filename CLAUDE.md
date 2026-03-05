@@ -1,4 +1,4 @@
-# webforge — Agentic Website Creation
+# webflo — Agentic Website Creation
 
 ## About
 
@@ -40,7 +40,7 @@ Director (auto-triggered)
 ## Project Structure
 
 ```
-webforge/
+webflo/
 ├── .claude-plugin/              # Plugin manifest (Claude Code)
 ├── source/skills/               # Source — edit these
 │   ├── director/SKILL.md        # Orchestrator agent
@@ -54,7 +54,7 @@ webforge/
 │   ├── windsurf/.windsurfrules  #   Windsurf (single file)
 │   ├── gemini-cli/GEMINI.md     #   Gemini CLI (single file)
 │   ├── codex/AGENTS.md          #   Codex (single file)
-│   └── generic/webforge-instructions.md
+│   └── generic/webflo-instructions.md
 ├── scripts/
 │   ├── build.js                 # Multi-provider build
 │   ├── providers.js             # Provider configurations
@@ -75,7 +75,7 @@ The build system outputs to 6 providers from a single source:
 | Windsurf | Single rules file | `dist/windsurf/.windsurfrules` |
 | Gemini CLI | GEMINI.md | `dist/gemini-cli/GEMINI.md` |
 | Codex | Agent instructions | `dist/codex/AGENTS.md` |
-| Generic | Markdown | `dist/generic/webforge-instructions.md` |
+| Generic | Markdown | `dist/generic/webflo-instructions.md` |
 
 Use `{{model}}` in source files — replaced with provider-specific model name during build.
 
@@ -97,6 +97,7 @@ npm run rebuild            # Clean + build
 | **director** | User wants to build/design/create web interfaces |
 | **strategist** | No design system exists, needs to create one |
 | **builder** | Creating frontend components, pages, or layouts |
+| **reviewer** | After builder creates code (quality, simplicity, security) |
 | **design-system** | Any design/build task (shared reference library) |
 
 ## Future Agents

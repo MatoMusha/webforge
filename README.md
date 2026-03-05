@@ -1,4 +1,4 @@
-# Webforge
+# Webflo
 
 AI-powered design agents that interview you about look and feel, generate complete design systems, and build production-grade frontend code — from a single prompt.
 
@@ -6,7 +6,7 @@ Works with **Claude Code**, **Cursor**, **Gemini CLI**, **Windsurf**, **Codex**,
 
 ## What It Does
 
-Instead of manually piecing together color palettes, type scales, spacing systems, and components, webforge coordinates specialized agents that handle the full pipeline:
+Instead of manually piecing together color palettes, type scales, spacing systems, and components, webflo coordinates specialized agents that handle the full pipeline:
 
 1. **Director** scans your project — detects existing styles, tokens, and conventions
 2. **Strategist** interviews you about aesthetic preferences — mood, colors, typography, theme — then generates a complete OKLCH token system
@@ -25,7 +25,7 @@ Builder: Creating Vite project with hero, menu section, location card... Dev ser
 
 ## Human-in-the-Loop
 
-Webforge never makes design decisions for you. Every agent has mandatory approval checkpoints:
+Webflo never makes design decisions for you. Every agent has mandatory approval checkpoints:
 
 - **Strategist** asks questions in small groups and waits for your answers — it won't assume your preferences
 - **Strategist** presents the generated token system and waits for your explicit approval before creating files
@@ -48,7 +48,7 @@ If your project already uses a framework (React, Vue, etc.), the agents will ada
 **Option 1: Install as a plugin (recommended)**
 
 ```bash
-claude /plugin install MatoMusha/webforge
+claude /plugin install MatoMusha/webflo
 ```
 
 That's it. The plugin provides all four agents to any project you open in Claude Code.
@@ -56,15 +56,15 @@ That's it. The plugin provides all four agents to any project you open in Claude
 To test a local copy during development:
 
 ```bash
-git clone https://github.com/MatoMusha/webforge.git
-claude --plugin-dir ~/webforge
+git clone https://github.com/MatoMusha/webflo.git
+claude --plugin-dir ~/webflo
 ```
 
 **Option 2: Copy skills into your project**
 
 ```bash
-git clone https://github.com/MatoMusha/webforge.git
-cd webforge && node scripts/build.js
+git clone https://github.com/MatoMusha/webflo.git
+cd webflo && node scripts/build.js
 
 # Copy the built skills into your project
 cp -r .claude/skills/ /path/to/your-project/.claude/skills/
@@ -75,20 +75,20 @@ Now start Claude Code in your project directory. The agents will auto-trigger wh
 ### Cursor
 
 ```bash
-git clone https://github.com/MatoMusha/webforge.git
-cd webforge && node scripts/build.js
+git clone https://github.com/MatoMusha/webflo.git
+cd webflo && node scripts/build.js
 
 # Copy the rules into your project
 cp -r dist/cursor/.cursor/ /path/to/your-project/.cursor/
 ```
 
-Webforge outputs individual `.mdc` rule files to `.cursor/rules/`. Cursor auto-loads the pipeline rules (which enforce the approval gates) and pulls in agent-specific rules as needed. This split format ensures the model gives proper attention to each instruction.
+Webflo outputs individual `.mdc` rule files to `.cursor/rules/`. Cursor auto-loads the pipeline rules (which enforce the approval gates) and pulls in agent-specific rules as needed. This split format ensures the model gives proper attention to each instruction.
 
 ### Windsurf
 
 ```bash
-git clone https://github.com/MatoMusha/webforge.git
-cd webforge && node scripts/build.js
+git clone https://github.com/MatoMusha/webflo.git
+cd webflo && node scripts/build.js
 
 # Copy the rules file into your project root
 cp dist/windsurf/.windsurfrules /path/to/your-project/.windsurfrules
@@ -97,8 +97,8 @@ cp dist/windsurf/.windsurfrules /path/to/your-project/.windsurfrules
 ### Gemini CLI
 
 ```bash
-git clone https://github.com/MatoMusha/webforge.git
-cd webforge && node scripts/build.js
+git clone https://github.com/MatoMusha/webflo.git
+cd webflo && node scripts/build.js
 
 # Copy the GEMINI.md file into your project root
 cp dist/gemini-cli/GEMINI.md /path/to/your-project/GEMINI.md
@@ -107,8 +107,8 @@ cp dist/gemini-cli/GEMINI.md /path/to/your-project/GEMINI.md
 ### Codex (OpenAI)
 
 ```bash
-git clone https://github.com/MatoMusha/webforge.git
-cd webforge && node scripts/build.js
+git clone https://github.com/MatoMusha/webflo.git
+cd webflo && node scripts/build.js
 
 # Copy the agents file into your project root
 cp dist/codex/AGENTS.md /path/to/your-project/AGENTS.md
@@ -117,14 +117,14 @@ cp dist/codex/AGENTS.md /path/to/your-project/AGENTS.md
 ### Any Other AI Tool
 
 ```bash
-git clone https://github.com/MatoMusha/webforge.git
-cd webforge && node scripts/build.js
+git clone https://github.com/MatoMusha/webflo.git
+cd webflo && node scripts/build.js
 
 # Use the generic instructions file
-cat dist/generic/webforge-instructions.md
+cat dist/generic/webflo-instructions.md
 ```
 
-Copy the contents of `webforge-instructions.md` into your AI tool's system prompt, project instructions, or custom rules file.
+Copy the contents of `webflo-instructions.md` into your AI tool's system prompt, project instructions, or custom rules file.
 
 ## Usage
 
@@ -225,7 +225,7 @@ Shared reference material that all agents consult. Covers 7 domains:
 
 ## Anti-Patterns (What It Avoids)
 
-Webforge is trained to avoid common AI-generated design patterns:
+Webflo is trained to avoid common AI-generated design patterns:
 
 - Cyan-on-dark, purple-to-blue gradients, neon accents
 - Gradient text on headings
@@ -242,7 +242,7 @@ Webforge is trained to avoid common AI-generated design patterns:
 ## Project Structure
 
 ```
-webforge/
+webflo/
 ├── source/skills/               # Source files (edit these)
 │   ├── director/SKILL.md        # Orchestrator agent
 │   ├── strategist/SKILL.md      # Design system architect
@@ -280,14 +280,14 @@ webforge/
 Requires Node.js 18+.
 
 ```bash
-git clone https://github.com/MatoMusha/webforge.git
-cd webforge
+git clone https://github.com/MatoMusha/webflo.git
+cd webflo
 node scripts/build.js
 ```
 
 Output:
 ```
-webforge build
+webflo build
 ==============
 
 Source: 4 skills, 9 reference files
@@ -298,7 +298,7 @@ Building providers:
   Windsurf       → dist/windsurf/.windsurfrules
   Gemini CLI     → dist/gemini-cli/GEMINI.md
   Codex          → dist/codex/AGENTS.md
-  Generic        → dist/generic/webforge-instructions.md
+  Generic        → dist/generic/webflo-instructions.md
 
   + .claude/skills/ (local Claude Code use)
   + skills/ (plugin distribution)
@@ -333,7 +333,7 @@ Run `node scripts/build.js` and find your output in `dist/my-tool/`.
 
 ## Contributing
 
-Webforge is open source under the Apache 2.0 license.
+Webflo is open source under the Apache 2.0 license.
 
 To add or modify agents:
 

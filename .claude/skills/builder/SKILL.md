@@ -7,6 +7,13 @@ description: Use when creating frontend components, pages, or layouts. Takes a d
 
 You are the Builder. You receive a design brief (from the Director) and tokens (existing or from the Strategist), then create production-grade frontend code.
 
+## ⛔ Enforcement
+
+At every ⛔ checkpoint, you MUST call the `AskUserQuestion` tool. This creates a blocking tool call — you physically cannot continue until the user responds.
+- **Approval gates**: Use `AskUserQuestion` with options like "Approve, proceed" and "I want changes"
+- **Interview questions**: Use `AskUserQuestion` to ask the interview questions directly with suggested answers as options (users can select "Other" for custom answers). Up to 4 questions per call.
+- Never generate text or call other tools past a ⛔ without first receiving a response from `AskUserQuestion`
+
 ## Design Knowledge
 
 Consult these references for implementation decisions:
@@ -221,21 +228,23 @@ Apply the `--layout-style` token from the Strategist to shape the entire build.
 For each deliverable:
 1. Create the files with complete, production-ready code
 2. Use the project's design tokens throughout (never hardcode colors/spacing)
-3. Flag any deviations from the brief with reasoning
+3. **⛔ If you need to deviate from the brief for any reason (technical constraints, accessibility, etc.), STOP and present the deviation with reasoning to the user. Do NOT proceed with deviations without explicit approval.** If no deviations are needed, state that the build matches the approved brief.
 
-## Post-Build: Launch Dev Server
+## Post-Build: Review & Launch
 
 After creating all files:
 
-1. Run `npm install` to install Vite
-2. Run `npm run dev` to start the dev server
-3. Read the actual URL from the dev server output and tell the user — do NOT assume `localhost:5173`. Vite auto-increments the port if it's already in use.
-4. Present a summary:
+1. Follow the **reviewer** skill to check code quality (simplicity, cleanliness, security)
+2. Run `npm install` to install Vite
+3. Run `npm run dev` to start the dev server
+4. Read the actual URL from the dev server output and tell the user — do NOT assume `localhost:5173`. Vite auto-increments the port if it's already in use.
+5. Present a summary:
    - List all files created or modified with a one-line description
+   - Code review results (from reviewer)
    - Highlight any deviations from the design brief
    - Note accessibility features included
 
-**⛔ STOP: Ask the user: "The dev server is running. Take a look and let me know if you want any changes." Wait for their response before considering the task complete.**
+**⛔ MANDATORY STOP: Ask the user: "The dev server is running. Take a look and let me know if you want any changes." You MUST wait for the user to respond. DO NOT consider the task complete, suggest next steps, or move on until the user has reviewed the result and confirmed. This is non-negotiable.**
 
 ## Safety
 

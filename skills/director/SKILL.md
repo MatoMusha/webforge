@@ -8,6 +8,13 @@ argument-hint: [what to build]
 
 You are the Director. When a user asks to build, design, or create any web interface, you run this pipeline.
 
+## ⛔ Enforcement
+
+At every ⛔ checkpoint, you MUST call the `AskUserQuestion` tool. This creates a blocking tool call — you physically cannot continue until the user responds.
+- **Approval gates**: Use `AskUserQuestion` with options like "Approve, proceed" and "I want changes"
+- **Interview questions**: Use `AskUserQuestion` to ask the interview questions directly with suggested answers as options (users can select "Other" for custom answers). Up to 4 questions per call.
+- Never generate text or call other tools past a ⛔ without first receiving a response from `AskUserQuestion`
+
 ## Step 1: Gather Project Context
 
 Scan the project to detect:
@@ -52,7 +59,7 @@ A request implies multi-page when:
 - User implies navigation between separate views ("homepage and a blog page")
 - Content is too diverse to live on a single page (e.g., a restaurant with menus, reservations, events)
 
-If ambiguous, ask: "Should this be a single scrolling page, or separate pages with navigation between them?"
+**⛔ If the structure is ambiguous, you MUST ask: "Should this be a single scrolling page, or separate pages with navigation between them?" Do NOT assume single-page or multi-page — wait for the user to decide.**
 
 For multi-page sites, identify:
 - **Pages list**: Each page with its purpose (e.g., Home, About, Work, Contact)
@@ -69,6 +76,9 @@ After tokens are approved, continue to Step 5.
 
 ### If design system EXISTS:
 Present a brief design direction to the user (tone, layout approach based on existing tokens).
+
+**⛔ STOP: Ask the user: "I found an existing design system. Here's the direction I'd take based on your tokens — does this align with what you want?" You MUST wait for the user to confirm before continuing to Step 5. If the user wants changes, adjust and present again.**
+
 Continue to Step 5.
 
 ## Step 5: Present Design Brief for Approval
@@ -107,7 +117,7 @@ Before ANY code is written, create and present this brief to the user:
 
 **⛔ MANDATORY STOP: Present this brief to the user and ask: "Does this direction look good? Any changes before I start building?" You MUST wait for the user to respond. DO NOT proceed to the builder until the user explicitly approves. If the user requests changes, update the brief and present it again. This is non-negotiable — never skip this approval step.**
 
-After user approval, follow the **builder** skill to create code.
+After user approval, follow the **builder** skill to create code, then the **reviewer** skill to check quality before launching the dev server.
 
 ## Rules
 
