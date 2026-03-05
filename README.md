@@ -10,7 +10,8 @@ Instead of manually piecing together color palettes, type scales, spacing system
 
 1. **Director** scans your project — detects existing styles, tokens, and conventions
 2. **Strategist** interviews you about aesthetic preferences — mood, colors, typography, theme — then generates a complete OKLCH token system
-3. **Builder** creates static, production-grade pages using your tokens — HTML, CSS, and vanilla JS that work by opening in a browser
+3. **Builder** creates production-grade pages using your tokens — HTML, CSS, and vanilla JS served through Vite
+4. **Reviewer** checks every file for simplicity, cleanliness, and security before you see the result
 
 ```
 You: "build me a landing page for a coffee brand"
@@ -20,26 +21,31 @@ Strategist: What mood are you going for?
 You: warm, organic, earthy
 Strategist: Generated palette: terracotta + warm cream + sage. Approve?
 You: yes
-Builder: Creating Vite project with hero, menu section, location card... Dev server running at localhost:5173.
+Reviewer: All files pass — no security issues, clean code, tokens used throughout.
+Builder: Dev server running at localhost:5173.
 ```
 
 ## Human-in-the-Loop
 
-Webflo never makes design decisions for you. Every agent has mandatory approval checkpoints:
+Webflo never makes design decisions for you. Every agent has mandatory approval checkpoints (⛔) that physically block execution until you respond.
 
-- **Strategist** asks questions in small groups and waits for your answers — it won't assume your preferences
-- **Strategist** presents the generated token system and waits for your explicit approval before creating files
-- **Director** presents the design brief and waits for your "go ahead" before the Builder starts
+**How enforcement works per tool:**
+
+| Tool | Mechanism |
+|------|-----------|
+| Claude Code | `AskUserQuestion` tool call — hard block |
+| Gemini CLI | `ask_user` tool call — hard block |
+| Cursor | `ask_followup_question` if available, otherwise stops generating |
+| Windsurf | `suggested_responses` if available, otherwise stops generating |
+| Codex / Generic | Stops generating and waits for your next message |
+
+**What gets blocked:**
+- Design system interview questions — asks in small groups, waits for your answers
+- Token/palette approval — presents the generated system, waits for explicit approval
+- Design brief approval — presents the plan, waits for your "go ahead"
+- Security issues — reviewer flags anything that needs your input
 
 No code is written until you've approved the direction. If you want changes, just say so — the agents will adjust and re-present.
-
-## Vite Dev Server Output
-
-All generated code is **vanilla HTML, CSS, and JavaScript** served through a **Vite dev server** — you get hot reload and a proper development experience with zero runtime dependencies. Vite is the only dev dependency.
-
-The Builder supports **single-page and multi-page sites**. Multi-page sites get shared navigation via a JS module, per-page `<title>` tags, and a Vite multi-page build config.
-
-If your project already uses a framework (React, Vue, etc.), the agents will adapt to it. But the default is always vanilla code with Vite as the dev server.
 
 ## Installation
 
@@ -51,7 +57,7 @@ If your project already uses a framework (React, Vue, etc.), the agents will ada
 claude /plugin install MatoMusha/webflo
 ```
 
-That's it. The plugin provides all four agents to any project you open in Claude Code.
+That's it. The plugin provides all five agents to any project you open in Claude Code.
 
 To test a local copy during development:
 
@@ -145,7 +151,7 @@ The Director detects no design system exists and triggers the Strategist, which 
 5. **Layout style** — Clean/balanced or bold/experimental? (affects grids, typography contrast, spacing, scroll effects)
 6. **Theme** — Light, dark, or both?
 
-After you answer, the Strategist generates a complete token system (OKLCH color palette, type scale, spacing, motion, layout style, border radius) and asks you to approve. Then the Builder creates your pages and launches the Vite dev server.
+After you answer, the Strategist generates a complete token system (OKLCH color palette, type scale, spacing, motion, layout style, border radius) and asks you to approve. Then the Builder creates your pages, the Reviewer checks code quality, and the dev server launches.
 
 ### Build a multi-page site
 
@@ -184,7 +190,7 @@ The orchestrator. Scans your project to detect:
 - Design system status (tokens, palette, fonts)
 - Styling approach (CSS custom properties, linked stylesheets)
 
-Then routes the pipeline: Strategist (if no design system) → presents design brief for your approval → Builder.
+Then routes the pipeline: Strategist (if no design system) → presents design brief for your approval → Builder → Reviewer.
 
 ### Strategist
 
@@ -208,6 +214,15 @@ The code creator. Takes the approved design brief and tokens, then builds:
 - Accessibility (WCAG AA contrast, keyboard navigation, screen reader support, `aria-current="page"`)
 - Motion with `prefers-reduced-motion` support
 - Will not start until the design brief has been approved by you
+
+### Reviewer
+
+The quality gate. Runs after the Builder, before you see the result. Checks every file for:
+- **Simplicity** — no unnecessary abstractions, minimal JS, no dead code
+- **Cleanliness** — semantic HTML, design tokens used throughout, no redundant wrappers
+- **Security** — no `innerHTML` with dynamic content, no `eval()`, no inline event handlers, external links secured, CSP compatible
+
+Fixes issues directly rather than just reporting them. Outputs a structured checklist summary.
 
 ### Design System (Knowledge Library)
 
@@ -251,6 +266,7 @@ webflo/
 │   │   └── reference/
 │   │       ├── component-patterns.md
 │   │       └── code-quality.md
+│   ├── reviewer/SKILL.md        # Code quality agent
 │   └── design-system/           # Shared knowledge library
 │       ├── SKILL.md
 │       └── reference/
@@ -290,11 +306,11 @@ Output:
 webflo build
 ==============
 
-Source: 4 skills, 9 reference files
+Source: 5 skills, 9 reference files
 
 Building providers:
-  Claude Code    → dist/claude-code/skills/ (13 files)
-  Cursor         → dist/cursor/.cursor/rules/ (5 files)
+  Claude Code    → dist/claude-code/skills/ (14 files)
+  Cursor         → dist/cursor/.cursor/rules/ (6 files)
   Windsurf       → dist/windsurf/.windsurfrules
   Gemini CLI     → dist/gemini-cli/GEMINI.md
   Codex          → dist/codex/AGENTS.md
@@ -325,6 +341,7 @@ export const providers = {
     structure: 'single-file',      // or 'skills-dir'
     outputFile: '.my-tool-rules',
     keepFrontmatter: false,
+    hitlMechanism: HITL_STOP_GENERATING,
   },
 };
 ```
