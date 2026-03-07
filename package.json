@@ -10,7 +10,7 @@
   },
   "scripts": {
     "build": "node scripts/build.js",
-    "clean": "rm -rf .claude/skills dist && mkdir -p .claude/skills dist",
+    "clean": "rm -rf .claude/skills dist skills && mkdir -p .claude/skills dist skills",
     "rebuild": "npm run clean && npm run build"
   },
   "keywords": [

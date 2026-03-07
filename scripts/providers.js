@@ -45,36 +45,10 @@ then stop. Write nothing else.
 - Writing code without an approved design brief is a critical failure. If you detect this, stop, delete what you wrote, and output \`[BLOCKED — design brief was never approved]\`.`;
 
 
-const HITL_CODEX = `This workflow is divided into PHASES. You may only execute ONE PHASE per response.
-
-**Phase structure:**
-1. STRATEGIST INTERVIEW — Each question group (1–5) is a separate phase. Ask the questions, then end your response.
-2. TOKEN APPROVAL — Present the generated tokens. End your response.
-3. DESIGN BRIEF — Present the brief. End your response.
-4. BUILD — Create the code. End your response.
-5. REVIEW & LAUNCH — Review code quality, start dev server. End your response.
-
-**Every response MUST start with a phase declaration on the first line:**
-\`[PHASE X — PHASE NAME]\`
-
-If the previous phase was not completed and explicitly approved by the user, start with:
-\`[BLOCKED — waiting for user approval of Phase X]\`
-then stop. Write nothing else.
-
-**At every ⛔ checkpoint, output this block and nothing after it:**
-\`\`\`approval-required
-phase: <current phase name>
-question: <the approval question>
-options: ["Approve", "Request changes"]
-\`\`\`
-
-**Rules:**
-- ONE phase per response. Never two.
-- At every ⛔ checkpoint, output the approval-required block as the LAST thing in your response, then STOP.
-- Do NOT begin the next phase in the same response. The user must reply first.
-- Before starting any phase, verify the previous phase was completed AND the user replied with explicit approval.
-- If you find yourself writing code without an approved design brief, STOP IMMEDIATELY — output \`[BLOCKED — design brief was never approved]\` and nothing else.
-- Writing code before design brief approval is a critical failure.`;
+const HITL_CODEX = `At every ⛔ checkpoint, you MUST call the \`request_user_input\` tool. This creates a blocking tool call — you physically cannot continue until the user responds.
+- **Approval gates**: Use \`request_user_input\` with the approval question and options like "Approve, proceed" and "I want changes"
+- **Interview questions**: Use \`request_user_input\` to ask the interview questions directly with suggested answers as options. Up to 4 questions per call.
+- Never generate text or call other tools past a ⛔ without first receiving a response from \`request_user_input\``;
 
 const HITL_STOP_GENERATING = `At every ⛔ checkpoint, you MUST completely stop generating. End your response at the ⛔ question. Do NOT output any text, code, or content past it. Wait for the user's next message before continuing.`;
 
